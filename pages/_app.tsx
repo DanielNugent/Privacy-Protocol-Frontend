@@ -2,6 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 import type { AppProps } from "next/app";
 import Layout from "../components/layout";
 import { WalletProvider } from "../state/wallet";
+import { SnackbarProvider } from "../state/snackbar";
 import { useRouter } from "next/router";
 import LandingPage from "../components/landingpage";
 
@@ -12,9 +13,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
   return (
     <WalletProvider>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <SnackbarProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </SnackbarProvider>
     </WalletProvider>
   );
 }

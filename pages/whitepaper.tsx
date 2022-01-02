@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import type { NextPage } from "next";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import Link from "next/link";
 import Box from "@mui/material/Box";
@@ -17,7 +17,6 @@ const Whitepaper: NextPage = () => {
     <Fragment>
       <Typography
         variant="h3"
-
         gutterBottom
         align="center"
         component="div"

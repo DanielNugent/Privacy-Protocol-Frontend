@@ -1,4 +1,10 @@
-const THRESHOLD = 0.5;
+import { ethers } from "ethers";
+const THRESHOLD = 0.4;
+
+interface IScanData {
+  hash: string;
+  accuracy: number;
+}
 
 function hammingWeight(l: bigint) {
   let c;
@@ -8,22 +14,30 @@ function hammingWeight(l: bigint) {
   return c;
 }
 
-function similarity(simhash1: string, simhash2: string) {
-  let sh1: bigint = BigInt(simhash1);
-  let sh2: bigint = BigInt(simhash2);
-  return hammingWeight(sh1 & sh2) / hammingWeight(sh1 | sh2);
+function similarity(simhash1: bigint, simhash2: bigint) {
+  return (
+    hammingWeight(simhash1 & simhash2) / hammingWeight(simhash1 | simhash2)
+  );
 }
 
 function findSimilarScans(scan: string, scans: Array<string>) {
-  if (scan.charAt(1) !== "x") {
-    scan = "0x" + scan;
+  let userScan: string = scan;
+  if (userScan.charAt(1) !== "x") {
+    userScan = `0x${scan}`;
   }
-  let results: Array<any> = [];
+  let results: Array<IScanData> = [];
   scans.forEach((s) => {
-    if (similarity(scan, s) > THRESHOLD) {
-      results.push(s);
+    let scanHex: string = BigInt(s).toString(16);
+    let sim: number = similarity(BigInt(userScan), BigInt("0x" + scanHex));
+    console.log(sim);
+    if (sim > THRESHOLD) {
+      results.push({
+        hash: scanHex,
+        accuracy: sim,
+      });
     }
   });
+  console.log(results);
   return results;
 }
-export { similarity };
+export { similarity, findSimilarScans };
