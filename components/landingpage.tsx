@@ -52,12 +52,12 @@ function LandingPage(): ReactElement {
             The Privacy Protocol
           </HeroText>
           <Stack direction="row" spacing={4} sx={{ flexGrow: 20 }}>
-            <NewTabLink href="http://localhost:3000/register" target="_blank">
+            <NewTabLink rel="noopener noreferrer" href="http://localhost:3000/register" target="_blank">
               <Button size="large" variant="contained">
                 Enter App
               </Button>
             </NewTabLink>
-            <NewTabLink href="http://localhost:3000/register" target="_blank">
+            <NewTabLink rel="noopener noreferrer" href="http://localhost:3000/register" target="_blank">
               <Button size="large" variant="contained">
                 Documentation
               </Button>

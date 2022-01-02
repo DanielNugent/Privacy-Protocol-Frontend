@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Stack from "@mui/material/Stack";
 import SaveIcon from "@mui/icons-material/Save";
-import { WalletContext } from "../pages/state/wallet";
+import { WalletContext } from "../state/wallet";
 import Avatar from "@mui/material/Avatar";
 import { useRouter } from "next/router";
 

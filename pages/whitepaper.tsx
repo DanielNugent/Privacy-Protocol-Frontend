@@ -6,7 +6,7 @@ import Link from "next/link";
 import Box from "@mui/material/Box";
 import styled from "styled-components";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { docco } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 
 const Centering = styled.div`
   text-align: center;
@@ -15,7 +15,13 @@ const Centering = styled.div`
 const Whitepaper: NextPage = () => {
   return (
     <Fragment>
-      <Typography variant="h3" gutterBottom align="center" component="div" style={{marginTop: 20}}>
+      <Typography
+        variant="h3"
+        gutterBottom
+        align="center"
+        component="div"
+        style={{ marginTop: 20 }}
+      >
         Whitepaper
       </Typography>
       <Typography id="introduction" variant="h4" gutterBottom component="div">
@@ -24,15 +30,23 @@ const Whitepaper: NextPage = () => {
       <Typography variant="body1" gutterBottom>
         There currently exist many decentralized options for storing files such
         as{" "}
-        <a target="_blank" href="https://ipfs.io/">
+        <a rel="noopener noreferrer" target="_blank" href="https://ipfs.io/">
           IPFS
         </a>
         ,{" "}
-        <a target="_blank" href="https://www.storj.io/">
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://www.storj.io/"
+        >
           STORJ
         </a>{" "}
         and{" "}
-        <a target="_blank" href="https://filecoin.io/">
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://filecoin.io/"
+        >
           Filecoin
         </a>
         . However, storing sensitive data such as medical data in an unencrypted
@@ -40,8 +54,8 @@ const Whitepaper: NextPage = () => {
         being uploaded. Maintaining access to decryption keys to these files and
         links to their storage location for long periods of time increases the
         burden of work on individuals. A solution to index these files in an
-        encrypted format and to maintain decryption keys with just a user's iris
-        scan and pin code could solve this problem as unless the user loses
+        encrypted format and to maintain decryption keys with just a user&apos;s
+        iris scan and pin code could solve this problem as unless the user loses
         their eye or forgets their pincode they will have lifetime access to any
         sensitive files they wise to store.
       </Typography>
@@ -53,14 +67,14 @@ const Whitepaper: NextPage = () => {
       </Typography>
       <Typography variant="body1" gutterBottom>
         An Iris Scan is a method of biometric identification which is created by
-        using mathematic patterns of one or both of a user's eyes. It has been
-        shown that iris scans have a large amount of entropy; that is in a large
-        population there is very little chance of having cross-detection between
-        two different user's scans. Using Libor Masek's iris recognition system{" "}
-        <a href="#reference_1">[1]</a> a user can obtain their iris scan in a
-        binary format. We however cannot register a user with their raw
-        biometric data as it would expose their identity. To solve this we can
-        use the hash of their iris scan instead.
+        using mathematic patterns of one or both of a user&apos;s eyes. It has
+        been shown that iris scans have a large amount of entropy; that is in a
+        large population there is very little chance of having cross-detection
+        between two different user&apos;s scans. Using Libor Masek&apos;s iris
+        recognition system <a href="#reference_1">[1]</a> a user can obtain
+        their iris scan in a binary format. We however cannot register a user
+        with their raw biometric data as it would expose their identity. To
+        solve this we can use the hash of their iris scan instead.
       </Typography>
       <Centering>
         <Image
@@ -77,20 +91,21 @@ const Whitepaper: NextPage = () => {
         <a
           target="_blank"
           href="https://en.wikipedia.org/wiki/Locality-sensitive_hashing"
+          rel="noopener noreferrer"
         >
           Locality Sensitive Hashing
         </a>{" "}
         (LSH) is an algorithmic technique which hashes similar inputs to buckets
         which a high probability. Normally hashing possesses what is known as
-        the "avalanche effect", essentially meaning that a single bit change in
-        the input will result half of the output bits flipping. This is
-        desirable as it prevents attackers from predicting the input given only
-        the output. In our protocol, we can use LSH to optain the original hash
-        of the iris scan the user used to register with the protocol with a new
-        iris scan, in order to recreate their credentials. This is necessary as
-        two iris scans on the same individual may result in a slightly different
-        scan due to the angle, camera used and lighting conditions which may be
-        impossible to recreate.
+        the &ldquo;avalanche effect&ldquo;, essentially meaning that a single
+        bit change in the input will result half of the output bits flipping.
+        This is desirable as it prevents attackers from predicting the input
+        given only the output. In our protocol, we can use LSH to optain the
+        original hash of the iris scan the user used to register with the
+        protocol with a new iris scan, in order to recreate their credentials.
+        This is necessary as two iris scans on the same individual may result in
+        a slightly different scan due to the angle, camera used and lighting
+        conditions which may be impossible to recreate.
         <SyntaxHighlighter language="javascript" style={docco}>
           {`Nilsimsa method\nString 1: The quick brown fox\nString 2: The quicker brown fox\nString 1 digest: 0a31b4be01a0808a29e0ec60e9a258545dc0526770022348380a2128708f2fdb\nString 2 digest: 1a31bc3e02a080a28b642864ea224857ddd0526f78022b48380e2269329d3fdb\nScore: 91`}
         </SyntaxHighlighter>
@@ -108,16 +123,20 @@ const Whitepaper: NextPage = () => {
         Register
       </Typography>
       <Typography variant="body1" gutterBottom>
-        The <b>Register</b> section is used to add a user's Hash of Scan (HoS)
-        to the smart contract internal data. For the purpose of the application,
-        this is permissionless, i.e. anyone can register a 256 bit hash of their
-        iris scan.{" "}
-        <a target="_blank" href="https://en.wikipedia.org/wiki/SimHash">
+        The <b>Register</b> section is used to add a user&apos;s Hash of Scan
+        (HoS) to the smart contract internal data. For the purpose of the
+        application, this is permissionless, i.e. anyone can register a 256 bit
+        hash of their iris scan.{" "}
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://en.wikipedia.org/wiki/SimHash"
+        >
           SimHash
         </a>{" "}
         should be used to hash it for security reasons. This could be modified
         in theory to only allow approved entities such as hospitals register
-        their patient's HoS.
+        their patient&apos;s HoS.
       </Typography>
       <Typography id="transactions" variant="h5" gutterBottom component="div">
         Transactions
@@ -128,7 +147,11 @@ const Whitepaper: NextPage = () => {
         their public and the Hash of the Record (<i>HoR</i>). For all normal
         hash functions; that is any non-LSH function, the user should use a
         modern hashing algorithm such as{" "}
-        <a target="_blank" href="https://en.wikipedia.org/wiki/SHA-3">
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://en.wikipedia.org/wiki/SHA-3"
+        >
           SHA-3
         </a>{" "}
         .
@@ -158,11 +181,11 @@ const Whitepaper: NextPage = () => {
         <Box sx={{ fontStyle: "italic", m: 2, textAlign: "center" }}>
           PrivateID = H(HoS || PIN)
         </Box>
-        The user needs to remember or store their PIN securely over the
-        course of their lifetime. There is no preset minimum length for the PIN
-        and a lookup table is used to map from a numeric PIN to a 256 bit
-        binary digit. When the user wants to retrieve an encrypted record they
-        use the recreated identifier to lookup the file location.
+        The user needs to remember or store their PIN securely over the course
+        of their lifetime. There is no preset minimum length for the PIN and a
+        lookup table is used to map from a numeric PIN to a 256 bit binary
+        digit. When the user wants to retrieve an encrypted record they use the
+        recreated identifier to lookup the file location.
         <Box sx={{ fontStyle: "italic", m: 2, textAlign: "center" }}>
           TxID --{">"} Enc<sub>PublicID+PrivateID</sub>(Record)
         </Box>
