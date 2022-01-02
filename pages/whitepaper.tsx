@@ -17,10 +17,11 @@ const Whitepaper: NextPage = () => {
     <Fragment>
       <Typography
         variant="h3"
+
         gutterBottom
         align="center"
         component="div"
-        style={{ marginTop: 20 }}
+        style={{ marginTop: 20, zIndex: 100 }}
       >
         Whitepaper
       </Typography>

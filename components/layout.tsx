@@ -1,14 +1,11 @@
 import React, { ReactElement, Fragment } from "react";
 import Header from "./header";
 import Container from "@mui/material/Container";
-import { WalletContext } from "../state/wallet";
 import WalletModal from "./walletmodal";
 
 interface Props {
   children: React.ReactNode;
 }
-
-
 
 export default function Layout({ children }: Props): ReactElement {
   return (
