@@ -8,11 +8,13 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 
 const BckImg = styled.div`
+height: 100vh;
   position: relative;
   overflow: hidden;
   background-size: cover;
+  width: 100%;
   margin: -8px -8px -8px -9px;
-  min-height: 100%;
+  min-height: 100vh;
   border: 0;
 `;
 const HeroText = styled(Typography)`
