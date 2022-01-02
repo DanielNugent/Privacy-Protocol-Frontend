@@ -1,0 +1,108 @@
+import React, { ReactElement, useContext, useCallback } from "react";
+import styled from "styled-components";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Link from "next/link";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Stack from "@mui/material/Stack";
+import SaveIcon from "@mui/icons-material/Save";
+import { WalletContext } from "../pages/state/wallet";
+import Avatar from "@mui/material/Avatar";
+import { useRouter } from "next/router";
+
+const StyledLoadingButton = styled(LoadingButton)`
+  min-width: 120px;
+`;
+
+export default function Header(): ReactElement {
+  const {
+    openWalletModal,
+    defaultAccount,
+    loading: walletLoading,
+    errorMessage,
+  } = useContext(WalletContext);
+  const router = useRouter();
+  const getButtonStyle = useCallback((path) => {
+    return router.pathname === `/${path}` ? "contained" : "outlined"
+  }, [router]);
+
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static" color="transparent">
+        <Toolbar>
+        <Link href="/" passHref>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }}>
+            Privacy Preserving
+          </Typography>
+          </Link>
+          <Stack direction="row" spacing={4} sx={{ flexGrow: 20 }}>
+            <Link href="/register" passHref>
+              <Button
+                variant={
+                  getButtonStyle("register")
+                }
+              >
+                Register
+              </Button>
+            </Link>
+            <Link href="/transactions" passHref>
+              <Button
+                variant={
+                  getButtonStyle("transactions")
+                }
+              >
+                Transactions
+              </Button>
+            </Link>
+            <Link href="/identifiers" passHref>
+              <Button
+                variant={getButtonStyle("identifiers")}
+              >
+                Identifiers
+              </Button>
+            </Link>
+            <Link href="/whitepaper" passHref>
+              <Button
+                variant={
+                  getButtonStyle("whitepaper")
+                }
+              >
+                Whitepaper
+              </Button>
+            </Link>
+          </Stack>
+          {!walletLoading ? (
+            <Button
+              onClick={openWalletModal}
+              variant="contained"
+              color={errorMessage ? "error" : "primary"}
+              startIcon={
+                <Avatar sx={{ width: 24, height: 24 }} src="/metamask.png" />
+              }
+            >
+              {!errorMessage && defaultAccount
+                ? defaultAccount.slice(0, 6) +
+                  "..." +
+                  defaultAccount.slice(defaultAccount.length - 4)
+                : errorMessage}
+            </Button>
+          ) : (
+            <StyledLoadingButton
+              onClick={openWalletModal}
+              loading
+              loadingPosition="end"
+              endIcon={<SaveIcon />}
+              variant="outlined"
+              color="inherit"
+            >
+              Loading
+            </StyledLoadingButton>
+          )}
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}
