@@ -5,6 +5,7 @@ import {
   findUsersTransactions,
   IScanData,
   ITransaction,
+  hexString,
 } from "../utils/index";
 import Web3 from "web3";
 import { SnackbarContext } from "./snackbar";
@@ -25,6 +26,11 @@ interface IContract {
   getSimilarHashOfScans: (userHash: string) => void;
   registerHoS: (userHash: string, userAddress: string) => void;
   getAllTransactions: (publicID: string) => void;
+  newTransaction: (
+    publicID: string,
+    hashOfRecord: string,
+    userAddress: string
+  ) => void;
 }
 
 interface Props {
@@ -38,6 +44,7 @@ export const ContractContext = createContext<IContract>({
   getSimilarHashOfScans: () => {},
   registerHoS: () => {},
   getAllTransactions: () => {},
+  newTransaction: () => {},
 });
 
 export function ContractProvider({ children }: Props) {
@@ -79,7 +86,7 @@ export function ContractProvider({ children }: Props) {
 
   function registerHoS(userHash: string, userAddress: string) {
     MyContract.methods
-      .registerHashOfScan(("0x" + userHash).valueOf())
+      .registerHashOfScan(hexString(userHash))
       .send({ from: userAddress })
       .then((result: any) => {
         console.log(result);
@@ -115,6 +122,22 @@ export function ContractProvider({ children }: Props) {
       });
   }
 
+  function newTransaction(
+    publicID: string,
+    hashOfRecord: string,
+    userAddress: string
+  ) {
+    MyContract.methods
+      .addTransaction(hexString(publicID), hexString(hashOfRecord))
+      .send({ from: userAddress })
+      .then((result: any) => {
+        openSuccessSnackbar("New transaction created!");
+        console.log(result);
+      })
+      .catch(() => {
+        openErrorSnackbar("Something went wrong!");
+      });
+  }
   return (
     <ContractContext.Provider
       value={{
@@ -122,6 +145,7 @@ export function ContractProvider({ children }: Props) {
         getSimilarHashOfScans,
         getAllTransactions,
         registerHoS,
+        newTransaction,
       }}
     >
       {children}

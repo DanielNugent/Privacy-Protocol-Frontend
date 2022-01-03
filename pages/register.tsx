@@ -9,8 +9,8 @@ import styled from "styled-components";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
+import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
-import HashOfScansTable from "../components/hashofscantable";
 import { WalletContext } from "../state/wallet";
 
 const ScanInput = styled(TextField)`
@@ -62,9 +62,7 @@ const Register: NextPage<Props> = ({ initError }) => {
           minHeight: "calc(100vh - 180px)",
         }}
       >
-        <div style={{flexGrow: 10}}>
-        <HashOfScansTable  data={similarScans || []} />
-        </div>
+        <CustomTable table="scans" data={similarScans || []} />
         <ScanInput
           InputProps={{
             startAdornment: (
@@ -115,8 +113,7 @@ const Register: NextPage<Props> = ({ initError }) => {
 
 Register.getInitialProps = ({ query }) => {
   let { userHash } = query;
-  if (userHash instanceof Array)
-    return { initError: false };
+  if (userHash instanceof Array) return { initError: true };
   return {
     initError: Boolean(
       !(userHash && userHash.match(/^[0-9a-f]+$/i)) || userHash.length !== 64
