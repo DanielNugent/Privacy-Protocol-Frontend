@@ -9,6 +9,7 @@ import {
 } from "../utils/index";
 import Web3 from "web3";
 import { SnackbarContext } from "./snackbar";
+import { WalletContext } from "./wallet";
 
 const ABI = require("../public/PrivacyPreserving.json")["abi"];
 const CONTRACT_ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C";
@@ -17,20 +18,16 @@ interface IContractState {
   similarScans: Array<IScanData>;
   usersTransactions: Array<ITransaction>;
   searched: boolean;
+  recordLocation: string | null;
 }
 
-interface IContract {
-  similarScans: Array<IScanData>;
-  usersTransactions: Array<ITransaction>;
-  searched: boolean;
+interface IContract extends IContractState {
   getSimilarHashOfScans: (userHash: string) => void;
-  registerHoS: (userHash: string, userAddress: string) => void;
+  registerHoS: (userHash: string) => void;
   getAllTransactions: (publicID: string) => void;
-  newTransaction: (
-    publicID: string,
-    hashOfRecord: string,
-    userAddress: string
-  ) => void;
+  newTransaction: (publicID: string, hashOfRecord: string) => void;
+  getRecord: (txID: string) => void;
+  newRecord: (txID: string, recordLocation: string) => void;
 }
 
 interface Props {
@@ -41,18 +38,23 @@ export const ContractContext = createContext<IContract>({
   similarScans: [],
   usersTransactions: [],
   searched: false,
+  recordLocation: null,
   getSimilarHashOfScans: () => {},
   registerHoS: () => {},
   getAllTransactions: () => {},
   newTransaction: () => {},
+  getRecord: () => {},
+  newRecord: () => {},
 });
 
 export function ContractProvider({ children }: Props) {
+  const { defaultAccount } = useContext(WalletContext);
   const { openErrorSnackbar, openSuccessSnackbar, openLoadingSnackbar } =
     useContext(SnackbarContext);
   const [contractState, setContractState] = useState<IContractState>({
     similarScans: [],
     usersTransactions: [],
+    recordLocation: null,
     searched: false,
   });
   const [MyContract, setMyContract] = useState<any>();
@@ -72,28 +74,29 @@ export function ContractProvider({ children }: Props) {
         let similarScans: Array<IScanData> = findSimilarScans(userHash, result);
         if (similarScans.length === 0)
           openLoadingSnackbar("No similar scans found.");
-        else openSuccessSnackbar("Found some similar scans!");
+        else openSuccessSnackbar("Found some similar scans!", "");
         setContractState((prevState) => ({
           ...prevState,
           similarScans: similarScans,
           searched: true,
         }));
       })
-      .catch(() => {
-        openErrorSnackbar("Error fetching scans!");
+      .catch((err: any) => {
+        openErrorSnackbar("Error fetching scans!", err.transactionHash);
       });
   }
 
-  function registerHoS(userHash: string, userAddress: string) {
+  function registerHoS(userHash: string) {
+    openLoadingSnackbar("Registering hash of scan...");
     MyContract.methods
       .registerHashOfScan(hexString(userHash))
-      .send({ from: userAddress })
+      .send({ from: defaultAccount })
       .then((result: any) => {
         console.log(result);
-        openSuccessSnackbar("Hash of scan registered!");
+        openSuccessSnackbar("Hash of scan registered!", result.transactionHash);
       })
-      .catch(() => {
-        openErrorSnackbar("Something went wrong!");
+      .catch((err: any) => {
+        openErrorSnackbar("Something went wrong!", err.transactionHash);
       });
   }
 
@@ -109,7 +112,7 @@ export function ContractProvider({ children }: Props) {
         if (transactions.length === 0) {
           openLoadingSnackbar("No transactions found for that PublicID");
         } else {
-          openSuccessSnackbar("Found the transactions!");
+          openSuccessSnackbar("Found the transactions!", "");
         }
         setContractState((prevState) => ({
           ...prevState,
@@ -117,27 +120,55 @@ export function ContractProvider({ children }: Props) {
         }));
         console.log(result);
       })
-      .catch(() => {
-        openErrorSnackbar("Something went wrong!");
+      .catch((err: any) => {
+        openErrorSnackbar("Something went wrong!", err.transactionHash);
       });
   }
 
-  function newTransaction(
-    publicID: string,
-    hashOfRecord: string,
-    userAddress: string
-  ) {
+  function newTransaction(publicID: string, hashOfRecord: string) {
+    openLoadingSnackbar("Creating a new transaction...");
     MyContract.methods
       .addTransaction(hexString(publicID), hexString(hashOfRecord))
-      .send({ from: userAddress })
+      .send({ from: defaultAccount })
       .then((result: any) => {
-        openSuccessSnackbar("New transaction created!");
+        openSuccessSnackbar("New transaction created!", result.transactionHash);
         console.log(result);
       })
-      .catch(() => {
-        openErrorSnackbar("Something went wrong!");
+      .catch((err: any) => {
+        openErrorSnackbar("Something went wrong!", err.transactionHash);
       });
   }
+
+  function getRecord(txID: string) {
+    MyContract.methods
+      .retrieveRecordLocation(hexString(txID))
+      .call()
+      .then((result: string) => {
+        openSuccessSnackbar("Retrieved encrypted record location!", "");
+        setContractState((prevState) => ({
+          ...prevState,
+          recordLocation: result,
+        }));
+      })
+      .catch((err: any) => {
+        openErrorSnackbar("Something went wrong!", err.transactionHash);
+      });
+  }
+
+  function newRecord(txID: string, recordLocation: string) {
+    openLoadingSnackbar("Adding some identifier...");
+    MyContract.methods
+      .storeRecordLocation(hexString(txID), recordLocation)
+      .send({ from: defaultAccount })
+      .then((result: any) => {
+        openSuccessSnackbar("New record linked to identifier!", "aa");
+        console.log(result);
+      })
+      .catch((err: any) => {
+        openErrorSnackbar("Something went wrong!", err.transactionHash);
+      });
+  }
+
   return (
     <ContractContext.Provider
       value={{
@@ -146,6 +177,8 @@ export function ContractProvider({ children }: Props) {
         getAllTransactions,
         registerHoS,
         newTransaction,
+        getRecord,
+        newRecord,
       }}
     >
       {children}

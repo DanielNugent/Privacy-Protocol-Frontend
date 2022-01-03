@@ -11,7 +11,7 @@ import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
-import { WalletContext } from "../state/wallet";
+import { hash256 } from "../utils/crypto";
 
 const ScanInput = styled(TextField)`
   margin-bottom: 20px;
@@ -20,17 +20,12 @@ const ScanInput = styled(TextField)`
 interface Props {
   initError: boolean;
 }
-/*
-{similarity(
-  "0x0a31b4be01a0808a29e0ec60e9a258545dc0526770022348380a2128708f2fd",
-  "0x0a31b4be01a0808a29e0ec60e9a258545dc0526770022348380a2128708f2fd"
-)}*/
+
 const Register: NextPage<Props> = ({ initError }) => {
   const [error, setError] = useState<boolean>(initError);
   const router = useRouter();
   const { getSimilarHashOfScans, registerHoS, similarScans, searched } =
     useContext(ContractContext);
-  const { defaultAccount } = useContext(WalletContext);
 
   function onChangeHoS(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -51,6 +46,7 @@ const Register: NextPage<Props> = ({ initError }) => {
   const { userHash } = router.query;
   const userHashString: string =
     !userHash || userHash instanceof Array ? "" : userHash;
+
   return (
     <Fragment>
       <Box
@@ -90,7 +86,7 @@ const Register: NextPage<Props> = ({ initError }) => {
         </Typography>
         <Stack direction="row" spacing={4}>
           <Button
-            onClick={() => registerHoS(userHashString, defaultAccount)}
+            onClick={() => registerHoS(userHashString)}
             disabled={error}
             size="large"
             variant="contained"

@@ -12,7 +12,7 @@ const scanColumns = [
   { field: "hash", headerName: "Hash of Scan", width: 600 },
   {
     field: "accuracy",
-    headerName: "Accuracy (%)",
+    headerName: "Resemblance",
     description: "How close the new scan resembles this one",
     width: 200,
   },
@@ -52,6 +52,7 @@ export default function CustomTable({ data, table }: Props): ReactElement {
         rows={data}
         columns={getColumns(table)}
         pageSize={5}
+        disableSelectionOnClick={true}
         rowsPerPageOptions={[5]}
       />
     </div>
