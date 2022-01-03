@@ -85,7 +85,7 @@ const Transactions: NextPage<Props> = ({ initError }) => {
         <Typography style={{ marginBottom: 10 }}>
           <Link href="/tools">Calculate my PublicID</Link>
         </Typography>
-        <Button disabled={error} size="large" variant="contained" onClick={() => getAllTransactions()}>
+        <Button disabled={error} size="large" variant="contained" onClick={() => getAllTransactions(publicIDString)}>
           Find Transactions
         </Button>
       </Box>
