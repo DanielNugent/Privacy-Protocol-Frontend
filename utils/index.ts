@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-const THRESHOLD = 0.4;
+const THRESHOLD = 0.1;
 
 interface IScanData {
   hash: string;
@@ -29,7 +29,6 @@ function findSimilarScans(scan: string, scans: Array<string>) {
   scans.forEach((s) => {
     let scanHex: string = BigInt(s).toString(16);
     let sim: number = similarity(BigInt(userScan), BigInt("0x" + scanHex));
-    console.log(sim);
     if (sim > THRESHOLD) {
       results.push({
         hash: scanHex,
@@ -37,7 +36,6 @@ function findSimilarScans(scan: string, scans: Array<string>) {
       });
     }
   });
-  console.log(results);
   return results;
 }
 export { similarity, findSimilarScans };

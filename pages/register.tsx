@@ -9,38 +9,50 @@ import styled from "styled-components";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
-import useContractData from "../state/contractdata";
+import { ContractContext } from "../state/contract";
 import HashOfScansTable from "../components/hashofscantable";
 import { WalletContext } from "../state/wallet";
 
 const ScanInput = styled(TextField)`
   margin-bottom: 20px;
 `;
+
+interface Props {
+  initError: boolean;
+}
 /*
 {similarity(
   "0x0a31b4be01a0808a29e0ec60e9a258545dc0526770022348380a2128708f2fd",
   "0x0a31b4be01a0808a29e0ec60e9a258545dc0526770022348380a2128708f2fd"
 )}*/
-const Register: NextPage = () => {
-  const [hashOfScan, setHashOfScan] = useState<string>("");
-  const [error, setError] = useState<boolean>(true);
-  const { getSimilarHashOfScans, registerHoS, contractState } =
-    useContractData();
+const Register: NextPage<Props> = ({ initError }) => {
+  const [error, setError] = useState<boolean>(initError);
+  const router = useRouter();
+  const { getSimilarHashOfScans, registerHoS, similarScans, searched } =
+    useContext(ContractContext);
   const { defaultAccount } = useContext(WalletContext);
+
   function onChangeHoS(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let HoS: string = e.target.value;
     setError(
       Boolean((HoS && !(HoS && HoS.match(/^[0-9a-f]+$/i))) || HoS.length !== 64)
     );
-    setHashOfScan(e.target.value);
+    if (HoS === undefined || HoS === null || HoS.length === 0) {
+      router.replace({
+        pathname: router.pathname,
+      });
+    } else
+      router.replace({
+        pathname: router.pathname,
+        query: { userHash: HoS },
+      });
   }
-
+  const { userHash } = router.query;
+  const userHashString: string =
+    !userHash || userHash instanceof Array ? "" : userHash;
   return (
     <Fragment>
-      {contractState.similarScans && contractState.similarScans.length > 0 && (
-        <HashOfScansTable data={contractState.similarScans} />
-      )}
       <Box
         sx={{
           display: "flex",
@@ -50,6 +62,9 @@ const Register: NextPage = () => {
           minHeight: "calc(100vh - 180px)",
         }}
       >
+        <div style={{flexGrow: 10}}>
+        <HashOfScansTable  data={similarScans || []} />
+        </div>
         <ScanInput
           InputProps={{
             startAdornment: (
@@ -57,7 +72,7 @@ const Register: NextPage = () => {
             ),
           }}
           fullWidth
-          value={hashOfScan}
+          value={userHash ? userHash : ""}
           label="Hash of Scan"
           required
           id="fullWidth"
@@ -77,7 +92,7 @@ const Register: NextPage = () => {
         </Typography>
         <Stack direction="row" spacing={4}>
           <Button
-            onClick={() => registerHoS(hashOfScan, defaultAccount)}
+            onClick={() => registerHoS(userHashString, defaultAccount)}
             disabled={error}
             size="large"
             variant="contained"
@@ -88,7 +103,7 @@ const Register: NextPage = () => {
             disabled={error}
             size="large"
             variant="contained"
-            onClick={() => getSimilarHashOfScans(hashOfScan)}
+            onClick={() => getSimilarHashOfScans(userHashString)}
           >
             Search
           </Button>
@@ -96,6 +111,17 @@ const Register: NextPage = () => {
       </Box>
     </Fragment>
   );
+};
+
+Register.getInitialProps = ({ query }) => {
+  let { userHash } = query;
+  if (userHash === undefined || !userHash || userHash instanceof Array)
+    return { initError: false };
+  return {
+    initError: Boolean(
+      !(userHash && userHash.match(/^[0-9a-f]+$/i)) || userHash.length !== 64
+    ),
+  };
 };
 
 export default Register;

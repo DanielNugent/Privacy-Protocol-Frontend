@@ -1,15 +1,14 @@
 declare let window: any;
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import { findSimilarScans } from "../utils/index";
-import { BigNumber } from "ethers";
 import Web3 from "web3";
-import { SnackbarContext } from "../state/snackbar";
+import { SnackbarContext } from "./snackbar";
 
 const ABI =
-  require("../../artifacts/contracts/PrivacyPreserving.sol/PrivacyPreserving.json")[
+  require("../public/PrivacyPreserving.json")[
     "abi"
   ];
-const ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C";
+const CONTRACT_ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C"
 
 interface IScanData {
   hash: string;
@@ -21,7 +20,25 @@ interface IContractState {
   searched: boolean;
 }
 
-export default function ContractData() {
+interface IContract {
+  similarScans: Array<IScanData>;
+  searched: boolean;
+  getSimilarHashOfScans: (userHash: string) => void;
+  registerHoS: (userHash: string, userAddress: string) => void;
+}
+
+interface Props {
+  children: React.ReactNode;
+}
+
+export const ContractContext = createContext<IContract>({
+  similarScans: [],
+  searched: false,
+  getSimilarHashOfScans: () => {},
+  registerHoS: () => {},
+});
+
+export function ContractProvider({ children }: Props) {
   const { openErrorSnackbar, openSuccessSnackbar, openLoadingSnackbar } =
     useContext(SnackbarContext);
   const [contractState, setContractState] = useState<IContractState>({
@@ -34,7 +51,7 @@ export default function ContractData() {
   useEffect(() => {
     let web3 = new Web3(window.ethereum);
     setWeb3(new Web3(window.ethereum));
-    setMyContract(new web3.eth.Contract(ABI, ADDRESS));
+    setMyContract(new web3.eth.Contract(ABI, CONTRACT_ADDRESS));
   }, []);
 
   function getSimilarHashOfScans(userHash: string) {
@@ -42,9 +59,12 @@ export default function ContractData() {
       .getHashOfScans()
       .call()
       .then((result: Array<string>) => {
+        let similarScans: Array<IScanData> = findSimilarScans(userHash, result);
+        if (similarScans.length === 0)
+          openLoadingSnackbar("No similar hashes found.");
         setContractState((prevState) => ({
           ...prevState,
-          similarScans: findSimilarScans(userHash, result),
+          similarScans: similarScans,
           searched: true,
         }));
       })
@@ -62,10 +82,15 @@ export default function ContractData() {
         openSuccessSnackbar("Hash of scan registered!");
       })
       .catch((err: any) => {
-        console.log(err);
         openErrorSnackbar("Something went wrong!");
       });
   }
 
-  return { getSimilarHashOfScans, registerHoS, contractState };
+  return (
+    <ContractContext.Provider
+      value={{ ...contractState, getSimilarHashOfScans, registerHoS }}
+    >
+      {children}
+    </ContractContext.Provider>
+  );
 }
