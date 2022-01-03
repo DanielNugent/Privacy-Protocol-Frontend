@@ -6,6 +6,10 @@ interface IScanData {
   accuracy: number;
 }
 
+interface ITransaction {
+  hashOfRecord: string;
+  publicID: string;
+}
 function hammingWeight(l: bigint) {
   let c;
   for (c = 0; l; c++) {
@@ -38,4 +42,20 @@ function findSimilarScans(scan: string, scans: Array<string>) {
   });
   return results;
 }
-export { similarity, findSimilarScans };
+
+function findUsersTransactions(
+  publicID: string,
+  transactions: Array<ITransaction>
+) {
+  let results: Array<ITransaction> = [];
+  transactions.forEach((tx) => {
+    if (tx.publicID === publicID) {
+      results.push({
+        publicID: tx.publicID,
+        hashOfRecord: tx.hashOfRecord,
+      });
+    }
+  });
+  return results;
+}
+export { similarity, findSimilarScans, findUsersTransactions, type IScanData, type ITransaction };

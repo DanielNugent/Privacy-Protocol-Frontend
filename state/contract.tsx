@@ -1,30 +1,30 @@
 declare let window: any;
 import React, { useState, useEffect, useContext, createContext } from "react";
-import { findSimilarScans } from "../utils/index";
+import {
+  findSimilarScans,
+  findUsersTransactions,
+  IScanData,
+  ITransaction,
+} from "../utils/index";
 import Web3 from "web3";
 import { SnackbarContext } from "./snackbar";
 
-const ABI =
-  require("../public/PrivacyPreserving.json")[
-    "abi"
-  ];
-const CONTRACT_ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C"
-
-interface IScanData {
-  hash: string;
-  accuracy: number;
-}
+const ABI = require("../public/PrivacyPreserving.json")["abi"];
+const CONTRACT_ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C";
 
 interface IContractState {
   similarScans: Array<IScanData>;
+  usersTransactions: Array<ITransaction>;
   searched: boolean;
 }
 
 interface IContract {
   similarScans: Array<IScanData>;
+  usersTransactions: Array<ITransaction>;
   searched: boolean;
   getSimilarHashOfScans: (userHash: string) => void;
   registerHoS: (userHash: string, userAddress: string) => void;
+  getAllTransactions: (publicID: string) => void;
 }
 
 interface Props {
@@ -33,9 +33,11 @@ interface Props {
 
 export const ContractContext = createContext<IContract>({
   similarScans: [],
+  usersTransactions: [],
   searched: false,
   getSimilarHashOfScans: () => {},
   registerHoS: () => {},
+  getAllTransactions: () => {},
 });
 
 export function ContractProvider({ children }: Props) {
@@ -43,6 +45,7 @@ export function ContractProvider({ children }: Props) {
     useContext(SnackbarContext);
   const [contractState, setContractState] = useState<IContractState>({
     similarScans: [],
+    usersTransactions: [],
     searched: false,
   });
   const [MyContract, setMyContract] = useState<any>();
@@ -61,7 +64,8 @@ export function ContractProvider({ children }: Props) {
       .then((result: Array<string>) => {
         let similarScans: Array<IScanData> = findSimilarScans(userHash, result);
         if (similarScans.length === 0)
-          openLoadingSnackbar("No similar hashes found.");
+          openLoadingSnackbar("No similar scans found.");
+        else openSuccessSnackbar("Found some similar scans!");
         setContractState((prevState) => ({
           ...prevState,
           similarScans: similarScans,
@@ -69,7 +73,7 @@ export function ContractProvider({ children }: Props) {
         }));
       })
       .catch(() => {
-        openErrorSnackbar("Error fetching hashes!");
+        openErrorSnackbar("Error fetching scans!");
       });
   }
 
@@ -81,14 +85,44 @@ export function ContractProvider({ children }: Props) {
         console.log(result);
         openSuccessSnackbar("Hash of scan registered!");
       })
-      .catch((err: any) => {
+      .catch(() => {
+        openErrorSnackbar("Something went wrong!");
+      });
+  }
+
+  function getAllTransactions(publicID: string) {
+    MyContract.methods
+      .getTransactions()
+      .call()
+      .then((result: any) => {
+        let transactions: Array<ITransaction> = findUsersTransactions(
+          publicID,
+          result
+        );
+        if (transactions.length === 0) {
+          openLoadingSnackbar("No transactions found for that PublicID");
+        } else {
+          openSuccessSnackbar("Found the transactions!");
+        }
+        setContractState((prevState) => ({
+          ...prevState,
+          usersTransactions: transactions,
+        }));
+        console.log(result);
+      })
+      .catch(() => {
         openErrorSnackbar("Something went wrong!");
       });
   }
 
   return (
     <ContractContext.Provider
-      value={{ ...contractState, getSimilarHashOfScans, registerHoS }}
+      value={{
+        ...contractState,
+        getSimilarHashOfScans,
+        getAllTransactions,
+        registerHoS,
+      }}
     >
       {children}
     </ContractContext.Provider>

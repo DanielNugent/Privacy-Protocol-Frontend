@@ -12,10 +12,10 @@ const BckImg = styled.div`
   position: relative;
   overflow: hidden;
   background-size: cover;
-  width: 100%;
-  margin: -8px -8px -8px -9px;
-  min-height: 100vh;
+  width: 100vw;
+  margin: -8px;
   border: 0;
+  padding: 0;
 `;
 const HeroText = styled(Typography)`
   margin-top: 20;

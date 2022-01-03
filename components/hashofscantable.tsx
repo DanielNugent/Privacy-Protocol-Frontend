@@ -6,6 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Link from "next/link";
 
 interface IData {
   hash: string;
@@ -27,8 +28,8 @@ interface Props {}
 export default function HashOfScansTable({ data }: any): ReactElement {
   const rows = data.map((data: IData) => createData(data.hash, data.accuracy));
   return (
-    <TableContainer component={Paper} sx={{marginTop: 5}}>
-      <Table sx={{ minWidth: 650}} aria-label="simple table">
+    <TableContainer component={Paper} sx={{ marginTop: 5 }}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Hash of Scan</TableCell>
@@ -43,7 +44,7 @@ export default function HashOfScansTable({ data }: any): ReactElement {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.hashx}
+                <Link href={`/tools/?userHash=${row.hashx}`}>{row.hashx}</Link>
               </TableCell>
               <TableCell align="right">{row.accuracyPercent}</TableCell>
             </TableRow>

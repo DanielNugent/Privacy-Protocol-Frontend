@@ -56,6 +56,9 @@ export default function Header(): ReactElement {
             <Link href="/register" passHref>
               <Button variant={getButtonStyle("register")}>Register</Button>
             </Link>
+            <Link href="/tools" passHref>
+              <Button variant={getButtonStyle("tools")}>Tools</Button>
+            </Link>
             <Link href="/transactions" passHref>
               <Button variant={getButtonStyle("transactions")}>
                 Transactions
