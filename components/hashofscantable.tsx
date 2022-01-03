@@ -26,8 +26,6 @@ interface Props {}
 
 export default function HashOfScansTable({ data }: any): ReactElement {
   const rows = data.map((data: IData) => createData(data.hash, data.accuracy));
-
-  console.log(rows);
   return (
     <TableContainer component={Paper} sx={{marginTop: 5}}>
       <Table sx={{ minWidth: 650}} aria-label="simple table">

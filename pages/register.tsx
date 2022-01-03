@@ -115,7 +115,6 @@ const Register: NextPage<Props> = ({ initError }) => {
 
 Register.getInitialProps = ({ query }) => {
   let { userHash } = query;
-  console.log("" === null);
   if (userHash === undefined || !userHash || userHash instanceof Array)
     return { initError: false };
   return {

@@ -5,10 +5,10 @@ import Web3 from "web3";
 import { SnackbarContext } from "./snackbar";
 
 const ABI =
-  require("../../artifacts/contracts/PrivacyPreserving.sol/PrivacyPreserving.json")[
+  require("../public/PrivacyPreserving.json")[
     "abi"
   ];
-const ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C";
+const CONTRACT_ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C"
 
 interface IScanData {
   hash: string;
@@ -51,7 +51,7 @@ export function ContractProvider({ children }: Props) {
   useEffect(() => {
     let web3 = new Web3(window.ethereum);
     setWeb3(new Web3(window.ethereum));
-    setMyContract(new web3.eth.Contract(ABI, ADDRESS));
+    setMyContract(new web3.eth.Contract(ABI, CONTRACT_ADDRESS));
   }, []);
 
   function getSimilarHashOfScans(userHash: string) {
@@ -82,7 +82,6 @@ export function ContractProvider({ children }: Props) {
         openSuccessSnackbar("Hash of scan registered!");
       })
       .catch((err: any) => {
-        console.log(err);
         openErrorSnackbar("Something went wrong!");
       });
   }
