@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import Layout from "../components/layout";
 import { WalletProvider } from "../state/wallet";
 import { SnackbarProvider } from "../state/snackbar";
+import { ContractProvider } from "../state/contract";
 import { useRouter } from "next/router";
 import LandingPage from "../components/landingpage";
 
@@ -12,13 +13,15 @@ function MyApp({ Component, pageProps }: AppProps) {
     return <LandingPage />;
   }
   return (
-    <WalletProvider>
-      <SnackbarProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </SnackbarProvider>
-    </WalletProvider>
+    <SnackbarProvider>
+      <WalletProvider>
+        <ContractProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ContractProvider>
+      </WalletProvider>
+    </SnackbarProvider>
   );
 }
 

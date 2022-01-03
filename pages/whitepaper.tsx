@@ -96,15 +96,15 @@ const Whitepaper: NextPage = () => {
           Locality Sensitive Hashing
         </a>{" "}
         (LSH) is an algorithmic technique which hashes similar inputs to buckets
-        which a high probability. Normally hashing possesses what is known as
+        with a high probability. Normally hashing possesses what is known as
         the &ldquo;avalanche effect&ldquo;, essentially meaning that a single
         bit change in the input will result half of the output bits flipping.
         This is desirable as it prevents attackers from predicting the input
-        given only the output. In our protocol, we can use LSH to optain the
+        given only the output. In our protocol, we can use LSH to obtain the
         original hash of the iris scan the user used to register with the
         protocol with a new iris scan, in order to recreate their credentials.
         This is necessary as two iris scans on the same individual may result in
-        a slightly different scan due to the angle, camera used and lighting
+        a slightly different scan due to the angle, camera used, and lighting
         conditions which may be impossible to recreate.
         <SyntaxHighlighter language="javascript" style={docco}>
           {`Nilsimsa method\nString 1: The quick brown fox\nString 2: The quicker brown fox\nString 1 digest: 0a31b4be01a0808a29e0ec60e9a258545dc0526770022348380a2128708f2fdb\nString 2 digest: 1a31bc3e02a080a28b642864ea224857ddd0526f78022b48380e2269329d3fdb\nScore: 91`}

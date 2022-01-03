@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 
 const BckImg = styled.div`
-height: 100vh;
+  height: 100vh;
   position: relative;
   overflow: hidden;
   background-size: cover;

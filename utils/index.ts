@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-const THRESHOLD = 0.4;
+const THRESHOLD = 0.1;
 
 interface IScanData {
   hash: string;
