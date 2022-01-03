@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, forwardRef } from "react";
+import { createContext, useState, forwardRef } from "react";
 
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -13,7 +13,7 @@ interface ISnackbar {
   openLoadingSnackbar: (message: string) => void;
 }
 
-const Alert = forwardRef<HTMLInputElement>(function Alert(props, ref) {
+const Alert = forwardRef<any, any>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
@@ -45,7 +45,7 @@ export function SnackbarProvider({ children }: Props) {
   };
 
   const handleClose = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: Event | React.SyntheticEvent<any, Event>,
     reason: string
   ) => {
     if (reason === "clickaway") {
