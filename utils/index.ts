@@ -90,7 +90,6 @@ function findUsersTransactions(
       });
     }
   });
-  console.log(results);
   return results;
 }
 export {

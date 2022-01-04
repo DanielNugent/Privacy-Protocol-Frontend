@@ -8,6 +8,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Stack from "@mui/material/Stack";
+import { Link as MuiLink } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import { WalletContext } from "../state/wallet";
 import Avatar from "@mui/material/Avatar";
@@ -24,7 +25,6 @@ const TransparentAppBar = styled(AppBar)`
 
 export default function Header(): ReactElement {
   const {
-    openWalletModal,
     defaultAccount,
     loading: walletLoading,
     errorMessage,
@@ -69,15 +69,19 @@ export default function Header(): ReactElement {
                 Identifiers
               </Button>
             </Link>
-            <Link href="/whitepaper" passHref>
-              <Button variant={getButtonStyle("whitepaper")}>Whitepaper</Button>
-            </Link>
           </Stack>
           {!walletLoading ? (
             <Button
-              onClick={openWalletModal}
               variant="contained"
               color={errorMessage ? "error" : "primary"}
+              component={MuiLink}
+              href={
+                !errorMessage &&
+                defaultAccount &&
+                `https://rinkeby.etherscan.io/address/${defaultAccount}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
               startIcon={
                 <Avatar sx={{ width: 24, height: 24 }} src="/metamask.png" />
               }
@@ -90,7 +94,6 @@ export default function Header(): ReactElement {
             </Button>
           ) : (
             <StyledLoadingButton
-              onClick={openWalletModal}
               loading
               loadingPosition="end"
               endIcon={<SaveIcon />}

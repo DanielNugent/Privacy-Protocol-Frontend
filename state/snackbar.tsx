@@ -89,7 +89,6 @@ export function SnackbarProvider({ children }: Props) {
 
     setOpenLoading(false);
   };
-  console.log(openLoading);
 
   return (
     <SnackbarContext.Provider

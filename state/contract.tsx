@@ -92,7 +92,6 @@ export function ContractProvider({ children }: Props) {
       .registerHashOfScan(hexString(userHash))
       .send({ from: defaultAccount })
       .then((result: any) => {
-        console.log(result);
         openSuccessSnackbar("Hash of scan registered!", result.transactionHash);
       })
       .catch((err: any) => {
@@ -118,7 +117,6 @@ export function ContractProvider({ children }: Props) {
           ...prevState,
           usersTransactions: transactions,
         }));
-        console.log(result);
       })
       .catch((err: any) => {
         openErrorSnackbar("Something went wrong!", err.transactionHash);
@@ -132,7 +130,6 @@ export function ContractProvider({ children }: Props) {
       .send({ from: defaultAccount })
       .then((result: any) => {
         openSuccessSnackbar("New transaction created!", result.transactionHash);
-        console.log(result);
       })
       .catch((err: any) => {
         openErrorSnackbar("Something went wrong!", err.transactionHash);
@@ -162,7 +159,6 @@ export function ContractProvider({ children }: Props) {
       .send({ from: defaultAccount })
       .then((result: any) => {
         openSuccessSnackbar("New record linked to identifier!", "aa");
-        console.log(result);
       })
       .catch((err: any) => {
         openErrorSnackbar("Something went wrong!", err.transactionHash);

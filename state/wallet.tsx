@@ -16,20 +16,14 @@ interface IWallet {
   errorMessage: string | null;
   defaultAccount: any;
   userBalance: string | null;
-  walletModalOpen: boolean;
   loading: boolean;
-  openWalletModal: () => void;
-  closeWalletModal: () => void;
 }
 
 export const WalletContext = createContext<IWallet>({
   errorMessage: null,
   defaultAccount: null,
   userBalance: null,
-  walletModalOpen: false,
   loading: false,
-  openWalletModal: () => {},
-  closeWalletModal: () => {},
 });
 
 export function WalletProvider({ children }: Props) {
@@ -37,10 +31,7 @@ export function WalletProvider({ children }: Props) {
     errorMessage: null,
     defaultAccount: null,
     userBalance: null,
-    walletModalOpen: false,
     loading: true,
-    openWalletModal: () => {},
-    closeWalletModal: () => {},
   });
 
   function accountChangeHandler(addresses: Array<string> | string) {
@@ -99,19 +90,6 @@ export function WalletProvider({ children }: Props) {
       });
   };
 
-  const closeWalletModal = () => {
-    setWalletState((prevState) => ({
-      ...prevState,
-      walletModalOpen: false,
-    }));
-  };
-
-  const openWalletModal = () => {
-    setWalletState((prevState) => ({
-      ...prevState,
-      walletModalOpen: true,
-    }));
-  };
 
   useEffect(() => {
     if (window.ethereum) {
@@ -140,17 +118,27 @@ export function WalletProvider({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    window.ethereum.on("accountsChanged", accountChangeHandler);
-    window.ethereum.on("chainChanged", changedChainHandler);
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", accountChangeHandler);
+      window.ethereum.on("chainChanged", changedChainHandler);
+    } else {
+      setWalletState((prevState) => ({
+        ...prevState,
+        errorMessage: "Error connecting to Metamask",
+        loading: false,
+      }));
+    }
     return () => {
-      window.ethereum.removeListener("accountsChanged", accountChangeHandler);
-      window.ethereum.removeListener("chainChanged", changedChainHandler);
+      if (window.ethereum) {
+        window.ethereum.removeListener("accountsChanged", accountChangeHandler);
+        window.ethereum.removeListener("chainChanged", changedChainHandler);
+      }
     };
   }, []);
 
   return (
     <WalletContext.Provider
-      value={{ ...walletState, closeWalletModal, openWalletModal }}
+      value={{ ...walletState }}
     >
       {children}
     </WalletContext.Provider>

@@ -1,7 +1,7 @@
 import React, { ReactElement, Fragment } from "react";
 import Header from "./header";
+import Footer from "./footer";
 import Container from "@mui/material/Container";
-import WalletModal from "./walletmodal";
 
 interface Props {
   children: React.ReactNode;
@@ -10,9 +10,11 @@ interface Props {
 export default function Layout({ children }: Props): ReactElement {
   return (
     <Fragment>
-        <Header />
-        <WalletModal/>
-        <Container maxWidth="md">{children}</Container>
+      <Header />
+      <Container maxWidth="md">
+        {children}
+        <Footer />
+      </Container>
     </Fragment>
   );
 }

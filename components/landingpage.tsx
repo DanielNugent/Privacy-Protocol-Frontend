@@ -72,7 +72,7 @@ function LandingPage(): ReactElement {
             </NewTabLink>
             <NewTabLink
               rel="noopener noreferrer"
-              href="/register"
+              href="https://daniel-nugent.gitbook.io/the-privacy-protocol/"
               target="_blank"
             >
               <Button size="large" variant="contained">
