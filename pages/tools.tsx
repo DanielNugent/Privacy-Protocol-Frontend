@@ -21,6 +21,7 @@ import CountryAutoComplete from "../components/countryautocomplete";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import countries from "../constants/countries";
 import { hash256 } from "../utils/crypto";
+import { dateToYYYYMMDD } from "../utils";
 
 const MarginTextField = styled(TextField)`
   margin-bottom: 7px;
@@ -28,8 +29,6 @@ const MarginTextField = styled(TextField)`
 `;
 
 interface Props {}
-
-
 
 interface IFormState {
   hashOfScan: string;
@@ -70,20 +69,14 @@ const Tools: NextPage = ({}: Props) => {
   } = useForm<IFormState>();
 
   const onSubmitPublicID = () => {
-    console.log(
-      getValues([
-        "hashOfScan",
-        "dateOfBirth",
-        "gender",
-        "countryOfBirth",
-        "publicID",
-        "pincode",
-        "privateID",
-        "key",
-        "hashOfRecord",
-        "txID",
-      ])
-    );
+    let values: any = getValues([
+      "hashOfScan",
+      "dateOfBirth",
+      "gender",
+      "countryOfBirth",
+    ]);
+
+    setValue("publicID", hash256(values[0] + dateToYYYYMMDD(values[1]) + values[2] + values[3].code));
   };
 
   return (
@@ -130,7 +123,7 @@ const Tools: NextPage = ({}: Props) => {
             <Controller
               name="dateOfBirth"
               control={control}
-              defaultValue=""
+              defaultValue={new Date().toDateString()}
               render={({ field }) => (
                 <DatePicker
                   {...field}
@@ -299,7 +292,7 @@ const Tools: NextPage = ({}: Props) => {
             PrivateID
           </Button>
           <Button size="large" variant="contained">
-            Key
+            Encryption Key
           </Button>
           <Button size="large" variant="contained">
             TxID

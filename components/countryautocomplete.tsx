@@ -11,11 +11,11 @@ interface Props {
 export default function CountryAutoComplete({ control }: Props): ReactElement {
   return (
     <Controller
-      render={({ field, formState }) => (
+      render={({ field, ...props }) => (
         <Autocomplete
+          {...props}
           sx={{ width: 300 }}
-          {...field}
-          {...formState}
+          onChange={(e, data) => field.onChange(data)}
           options={countries}
           getOptionLabel={(option) => option.label || ""}
           renderOption={(props, option) => (
