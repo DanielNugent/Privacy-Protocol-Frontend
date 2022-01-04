@@ -79,7 +79,7 @@ const Register: NextPage<Props> = ({ initError }) => {
           <Link
             rel="noopener noreferrer"
             target="_blank"
-            href="https://www.google.com"
+            href="https://daniel-nugent.gitbook.io/the-privacy-protocol/guides/obtaining-your-iris-scan"
           >
             How do I get a hash of my Iris Scan?
           </Link>

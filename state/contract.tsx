@@ -10,9 +10,8 @@ import {
 import Web3 from "web3";
 import { SnackbarContext } from "./snackbar";
 import { WalletContext } from "./wallet";
-
+import {CONTRACT_ADDRESS} from "../constants/contract"
 const ABI = require("../public/PrivacyPreserving.json")["abi"];
-const CONTRACT_ADDRESS = "0x068729E25c1BEe3a67D0E3f2F9F47A351640D83C";
 
 interface IContractState {
   similarScans: Array<IScanData>;

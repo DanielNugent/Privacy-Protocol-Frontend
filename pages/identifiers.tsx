@@ -135,7 +135,13 @@ const Identifiers: NextPage<Props> = ({
           helperText="The location of the encrypted record"
         />
         <Typography style={{ marginBottom: 10 }}>
-          <Link href="/tools">How do I encrypt it?</Link>
+          <Link
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://daniel-nugent.gitbook.io/the-privacy-protocol/guides/usage-pattern#storing-a-new-record"
+          >
+            How do I encrypt it?
+          </Link>
         </Typography>
         <Stack direction="row" spacing={4}>
           <Button

@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 const THRESHOLD = 0.4;
 
 interface IScanData {
