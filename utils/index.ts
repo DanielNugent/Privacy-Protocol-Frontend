@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-const THRESHOLD = 0.1;
+const THRESHOLD = 0.4;
 
 interface IScanData {
   hash: string;
-  accuracy: number;
+  accuracy: string;
   id: number;
 }
 
@@ -12,12 +12,31 @@ interface ITransaction {
   publicID: string;
   id: number;
 }
-function hexString(s: string) {
-  return ("0x" + s).valueOf();
+
+function truncate(str: string, n: number) {
+  return str.length > n ? str.substr(0, n - 1) + "&hellip;" : str;
 }
+
+function hexString(s: string) {
+  let tempS: string = s;
+  while(tempS.length < 64){
+    tempS = "0" + tempS;
+  }
+  return ("0x" + tempS).valueOf();
+}
+
+function removeHexString0x(s: string){
+  return s.substring(2)
+}
+
 function numberToHexString(d: string) {
   return hexString(BigInt(d).toString(16).toLowerCase());
+
 }
+function numberToHex(d: string) {
+  return BigInt(d).toString(16).toLowerCase();
+}
+
 function hammingWeight(l: bigint) {
   let c;
   for (c = 0; l; c++) {
@@ -43,8 +62,8 @@ function findSimilarScans(scan: string, scans: Array<string>) {
     let sim: number = similarity(BigInt(userScan), BigInt(scanHex));
     if (sim > THRESHOLD) {
       results.push({
-        hash: scanHex,
-        accuracy: sim,
+        hash: removeHexString0x(scanHex),
+        accuracy: Number(sim).toFixed(4),
         id: idx,
       });
     }
@@ -66,7 +85,7 @@ function findUsersTransactions(
     if (txHexID === publicIDHex) {
       results.push({
         publicID: txHexID,
-        hashOfRecord: numberToHexString(tx.hashOfRecord),
+        hashOfRecord: removeHexString0x(numberToHexString(tx.hashOfRecord)),
         id: idx,
       });
     }
@@ -79,6 +98,7 @@ export {
   hexString,
   findSimilarScans,
   findUsersTransactions,
+  truncate,
   type IScanData,
   type ITransaction,
 };

@@ -11,7 +11,6 @@ import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
-import { WalletContext } from "../state/wallet";
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 10px;
@@ -32,8 +31,8 @@ const Transactions: NextPage<Props> = ({
     initHashOfRecordError
   );
   const router = useRouter();
-  const { getAllTransactions, newTransaction, usersTransactions } = useContext(ContractContext);
-  const { defaultAccount } = useContext(WalletContext);
+  const { getAllTransactions, newTransaction, usersTransactions } =
+    useContext(ContractContext);
 
   function onChangePublicID(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -47,7 +46,7 @@ const Transactions: NextPage<Props> = ({
     if (publicID === undefined || publicID === null || publicID.length === 0) {
       router.replace({
         pathname: router.pathname,
-        query: { hashOfRecord: hashOfRecordString },
+        query: hashOfRecordString ? { hashOfRecord: hashOfRecordString } : {},
       });
     } else
       router.replace({
@@ -73,7 +72,7 @@ const Transactions: NextPage<Props> = ({
     ) {
       router.replace({
         pathname: router.pathname,
-        query: { publicID: publicIDString },
+        query: publicIDString ? { publicID: publicIDString } : {},
       });
     } else
       router.replace({
@@ -150,7 +149,7 @@ const Transactions: NextPage<Props> = ({
             size="large"
             variant="contained"
             onClick={() =>
-              newTransaction(publicIDString, hashOfRecordString, defaultAccount)
+              newTransaction(publicIDString, hashOfRecordString)
             }
           >
             New Transaction

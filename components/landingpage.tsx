@@ -63,7 +63,7 @@ function LandingPage(): ReactElement {
           <Stack direction="row" spacing={4}>
             <NewTabLink
               rel="noopener noreferrer"
-              href="http://localhost:3000/register"
+              href="/register"
               target="_blank"
             >
               <Button size="large" variant="contained">
@@ -72,7 +72,7 @@ function LandingPage(): ReactElement {
             </NewTabLink>
             <NewTabLink
               rel="noopener noreferrer"
-              href="http://localhost:3000/register"
+              href="/register"
               target="_blank"
             >
               <Button size="large" variant="contained">
