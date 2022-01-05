@@ -1,7 +1,12 @@
 import sha256 from "crypto-js/sha256";
 import CryptoJS from "crypto-js";
 
-function strip64HexStart(s: string){
+function is256BitHex(s: string | undefined) {
+  if (s === undefined || !s) return false;
+  return Boolean(!(s && s.match(/^[0-9a-f]+$/i)) || s.length !== 64);
+}
+
+function strip64HexStart(s: string) {
   let formattedString: string = s;
   if (formattedString.length === 66) {
     formattedString = formattedString.substring(2);
@@ -16,7 +21,7 @@ function hash256Hex(s: string) {
 }
 
 function hash256(s: string) {
-  return sha256(s).toString(CryptoJS.enc.Hex);
+  return sha256(s.toLowerCase()).toString(CryptoJS.enc.Hex);
 }
 
-export { hash256 };
+export { hash256, is256BitHex };

@@ -1,5 +1,6 @@
-import { useState, useEffect, Fragment } from "react";
+import { Fragment } from "react";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import Layout from "../components/layout";
 import { WalletProvider } from "../state/wallet";
 import { SnackbarProvider } from "../state/snackbar";
@@ -13,15 +14,25 @@ function MyApp({ Component, pageProps }: AppProps) {
     return <LandingPage />;
   }
   return (
-    <SnackbarProvider>
-      <WalletProvider>
-        <ContractProvider>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ContractProvider>
-      </WalletProvider>
-    </SnackbarProvider>
+    <Fragment>
+      <Head>
+        <title>The Privacy Protocol</title>
+        <meta
+          name="description"
+          content="A Decentralized Record Encryption and Indexing System."
+        />
+        <link rel="icon" href="/lock.ico" />
+      </Head>
+        <SnackbarProvider>
+          <WalletProvider>
+            <ContractProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ContractProvider>
+          </WalletProvider>
+        </SnackbarProvider>
+    </Fragment>
   );
 }
 

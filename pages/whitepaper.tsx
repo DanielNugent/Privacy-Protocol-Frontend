@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import type { NextPage } from "next";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import Link from "next/link";
 import Box from "@mui/material/Box";
 import styled from "styled-components";
 import SyntaxHighlighter from "react-syntax-highlighter";

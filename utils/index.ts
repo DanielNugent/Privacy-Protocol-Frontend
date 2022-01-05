@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 const THRESHOLD = 0.4;
 
 interface IScanData {
@@ -13,25 +12,37 @@ interface ITransaction {
   id: number;
 }
 
+function dateToYYYYMMDD(str: string) {
+  let dateObj = new Date(str);
+  let month = (dateObj.getUTCMonth() + 1).toString(); //months from 1-12
+  let day = dateObj.getUTCDate().toString();
+  if(day.length === 1){
+    day = "0" + day
+  }
+  if(month.length === 1){
+    month = "0" + month
+  }
+  let year = dateObj.getUTCFullYear().toString();
+  return year + month + day;
+}
 function truncate(str: string, n: number) {
   return str.length > n ? str.substr(0, n - 1) + "&hellip;" : str;
 }
 
 function hexString(s: string) {
   let tempS: string = s;
-  while(tempS.length < 64){
+  while (tempS.length < 64) {
     tempS = "0" + tempS;
   }
   return ("0x" + tempS).valueOf();
 }
 
-function removeHexString0x(s: string){
-  return s.substring(2)
+function removeHexString0x(s: string) {
+  return s.substring(2);
 }
 
 function numberToHexString(d: string) {
   return hexString(BigInt(d).toString(16).toLowerCase());
-
 }
 function numberToHex(d: string) {
   return BigInt(d).toString(16).toLowerCase();
@@ -98,6 +109,7 @@ export {
   findSimilarScans,
   findUsersTransactions,
   truncate,
+  dateToYYYYMMDD,
   type IScanData,
   type ITransaction,
 };
