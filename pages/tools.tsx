@@ -227,7 +227,7 @@ const Tools: NextPage = ({}: Props) => {
           value={formState.hashOfScan}
           error={formState.hashOfScanError}
           onChange={(e) => onChangeField(HASH_OF_SCAN, e)}
-          label="hashOfScan"
+          label="Hash of the scan"
           fullWidth
           id="hash-of-scan"
           helperText="The hashOfScan should be a 256 bit string in Hexadecimal format"
