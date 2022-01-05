@@ -5,6 +5,7 @@ import Layout from "../components/layout";
 import { WalletProvider } from "../state/wallet";
 import { SnackbarProvider } from "../state/snackbar";
 import { ContractProvider } from "../state/contract";
+import {ToolsFormProvider} from "../state/toolsformstate";
 import { useRouter } from "next/router";
 import LandingPage from "../components/landingpage";
 
@@ -26,9 +27,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <SnackbarProvider>
           <WalletProvider>
             <ContractProvider>
+              <ToolsFormProvider>
               <Layout>
                 <Component {...pageProps} />
               </Layout>
+              </ToolsFormProvider>
             </ContractProvider>
           </WalletProvider>
         </SnackbarProvider>
