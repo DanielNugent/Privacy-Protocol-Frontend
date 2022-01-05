@@ -11,6 +11,7 @@ import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
+import { is256BitHex } from "../utils/crypto";
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 10px;
@@ -148,9 +149,7 @@ const Transactions: NextPage<Props> = ({
             disabled={publicIDError || hashOfRecordError}
             size="large"
             variant="contained"
-            onClick={() =>
-              newTransaction(publicIDString, hashOfRecordString)
-            }
+            onClick={() => newTransaction(publicIDString, hashOfRecordString)}
           >
             New Transaction
           </Button>
@@ -165,13 +164,8 @@ Transactions.getInitialProps = ({ query }) => {
   if (publicID instanceof Array || hashOfRecord instanceof Array)
     return { initPublicIDError: true, initHashOfRecordError: true };
   return {
-    initPublicIDError: Boolean(
-      !(publicID && publicID.match(/^[0-9a-f]+$/i)) || publicID.length !== 64
-    ),
-    initHashOfRecordError: Boolean(
-      !(hashOfRecord && hashOfRecord.match(/^[0-9a-f]+$/i)) ||
-        hashOfRecord.length !== 64
-    ),
+    initPublicIDError: is256BitHex(publicID),
+    initHashOfRecordError: is256BitHex(hashOfRecord),
   };
 };
 

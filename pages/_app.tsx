@@ -17,18 +17,21 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Fragment>
       <Head>
         <title>The Privacy Protocol</title>
-        <meta name="description" content="A Decentralized Record Encryption and Indexing System." />
+        <meta
+          name="description"
+          content="A Decentralized Record Encryption and Indexing System."
+        />
         <link rel="icon" href="/lock.ico" />
       </Head>
-      <SnackbarProvider>
-        <WalletProvider>
-          <ContractProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </ContractProvider>
-        </WalletProvider>
-      </SnackbarProvider>
+        <SnackbarProvider>
+          <WalletProvider>
+            <ContractProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ContractProvider>
+          </WalletProvider>
+        </SnackbarProvider>
     </Fragment>
   );
 }

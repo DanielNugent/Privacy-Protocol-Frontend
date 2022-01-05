@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
 import { ContractContext } from "../state/contract";
-import { truncate } from "../utils/index";
+import { is256BitHex } from "../utils/crypto";
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 10px;
@@ -171,9 +171,7 @@ Identifiers.getInitialProps = ({ query }) => {
   if (txID instanceof Array || recordLocation instanceof Array)
     return { initTxLocationError: true, initRecordLocationError: true };
   return {
-    initTxLocationError: Boolean(
-      !(txID && txID.match(/^[0-9a-f]+$/i)) || txID.length !== 64
-    ),
+    initTxLocationError: is256BitHex(txID),
     initRecordLocationError: !recordLocation,
   };
 };

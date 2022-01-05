@@ -11,7 +11,7 @@ import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
-import { hash256 } from "../utils/crypto";
+import {is256BitHex } from "../utils/crypto";
 
 const ScanInput = styled(TextField)`
   margin-bottom: 20px;
@@ -111,9 +111,7 @@ Register.getInitialProps = ({ query }) => {
   let { userHash } = query;
   if (userHash instanceof Array) return { initError: true };
   return {
-    initError: Boolean(
-      !(userHash && userHash.match(/^[0-9a-f]+$/i)) || userHash.length !== 64
-    ),
+    initError: is256BitHex(userHash)
   };
 };
 
