@@ -1,7 +1,8 @@
 import sha256 from "crypto-js/sha256";
 import CryptoJS from "crypto-js";
 
-function is256BitHex(s: string) {
+function is256BitHex(s: string | undefined) {
+  if (s === undefined || !s) return false;
   return Boolean(!(s && s.match(/^[0-9a-f]+$/i)) || s.length !== 64);
 }
 
