@@ -4,6 +4,8 @@ There currently exist many decentralized options for storing files such as IPFS 
 
 The smart contract code for the procotol can be found [here](https://github.com/DanielNugent/Privacy-Protocol-Contract)
 
+A link to the live app can be found [here](https://privacy-protocol-frontend.vercel.app/)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
