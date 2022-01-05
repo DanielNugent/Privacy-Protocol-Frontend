@@ -1,27 +1,21 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/lab/Autocomplete";
-import { Controller } from "react-hook-form";
 import Box from "@mui/material/Box";
 import countries from "../constants/countries";
 import { COUNTRY_OF_BIRTH } from "../constants/form";
-interface Props {
-  onChange: (field: string, e: any) => void;
-  value: any;
-}
+import { ToolsFormContext } from "../state/toolsformstate";
 
-export default function CountryAutoComplete({
-  onChange,
-  value,
-}: Props): ReactElement {
+export default function CountryAutoComplete(): ReactElement {
+  const { formState, onChangeField } = useContext(ToolsFormContext);
   return (
     <Autocomplete
       sx={{ width: 300 }}
       onChange={(_, values) =>
-        onChange(COUNTRY_OF_BIRTH, { target: { value: values } })
+        onChangeField(COUNTRY_OF_BIRTH, { target: { value: values } })
       }
       options={countries}
-      value={value}
+      value={formState.countryOfBirth}
       getOptionLabel={(option) => option.label || ""}
       renderOption={(props, option) => (
         <Box
