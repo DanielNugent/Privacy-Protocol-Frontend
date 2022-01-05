@@ -1,3 +1,9 @@
+# The Privacy Protocol
+
+There currently exist many decentralized options for storing files such as IPFS and Filecoin. However, storing sensitive records such as medical documents in an unencrypted format poses many risks as anyone observing the blockchain can see files being uploaded. Maintaining access to decryption keys to these files and links to their storage location for long periods of time increases the burden of work on individuals. A solution is to index these files in an encrypted format and to make it possible to generate the symmetric encryption/decryption key with just a user's iris scan and pin code. This could solve the problem of maintaining access to these files for a lifetime as long as the user remembers their pin code.
+
+The smart contract code for the procotol can be found [here](https://github.com/DanielNugent/Privacy-Protocol-Contract)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
