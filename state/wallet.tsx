@@ -1,12 +1,13 @@
 declare let window: any;
 import { createContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
-
-const CHAIN_ID = "0x4";
-const WRONG_CHAIN_MESSAGE = "Not on Rinkeby";
-const WALLET_DISCONNECTED_MESSAGE = "Wallet disconnected";
-const INSTALL_METAMASK = "Install MetaMask";
-const GENERIC_MESSAGE = "Connect MetaMask";
+import {
+  CHAIN_ID,
+  WRONG_CHAIN_MESSAGE,
+  WALLET_DISCONNECTED_MESSAGE,
+  INSTALL_METAMASK,
+  GENERIC_MESSAGE,
+} from "../constants/wallet";
 
 interface Props {
   children: React.ReactNode;
@@ -67,6 +68,7 @@ export function WalletProvider({ children }: Props) {
   }
 
   function changedChainHandler(chain_id: string) {
+    console.log(chain_id, CHAIN_ID);
     if (chain_id === CHAIN_ID) window.location.reload();
     else
       setWalletState((prevState) => ({
@@ -89,7 +91,6 @@ export function WalletProvider({ children }: Props) {
         }));
       });
   };
-
 
   useEffect(() => {
     if (window.ethereum) {
@@ -137,9 +138,7 @@ export function WalletProvider({ children }: Props) {
   }, []);
 
   return (
-    <WalletContext.Provider
-      value={{ ...walletState }}
-    >
+    <WalletContext.Provider value={{ ...walletState }}>
       {children}
     </WalletContext.Provider>
   );

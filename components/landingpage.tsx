@@ -11,17 +11,13 @@ const BckImg = styled.div`
   height: 100vh;
   position: relative;
   overflow: hidden;
-  background-size: cover;
   width: 100vw;
-  margin: -8px;
-  border: 0;
-  padding: 0;
 `;
 const HeroText = styled(Typography)`
   margin-top: 20;
   text-shadow: 0 4px 4px rgb(0 0 0 / 25%);
-  background-color #aee1f9;
-  background-image linear-gradient(315deg, #aee1f9 0%, #f6ebe6 74%);
+  background-color: #f9c5d1;
+  background-image: linear-gradient(315deg, #f9c5d1 0%, #9795ef 74%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 500;

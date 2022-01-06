@@ -98,7 +98,7 @@ export function SnackbarProvider({ children }: Props) {
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={openLoading}
         onClose={handleClose}
-        sx={{ marginTop: "50px", marginRight: "8px" }}
+        sx={{ marginTop: "50px" }}
         key={"top" + "right"}
       >
         <Alert
