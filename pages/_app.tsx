@@ -8,6 +8,7 @@ import { ContractProvider } from "../state/contract";
 import {ToolsFormProvider} from "../state/toolsformstate";
 import { useRouter } from "next/router";
 import LandingPage from "../components/landingpage";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();

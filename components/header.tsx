@@ -13,7 +13,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { WalletContext } from "../state/wallet";
 import Avatar from "@mui/material/Avatar";
 import { useRouter } from "next/router";
-
+import {WALLET_BLOCKCHAIN_EXPLORER} from "../constants/wallet";
 const StyledLoadingButton = styled(LoadingButton)`
   min-width: 120px;
 `;
@@ -78,7 +78,7 @@ export default function Header(): ReactElement {
               href={
                 !errorMessage &&
                 defaultAccount &&
-                `https://rinkeby.etherscan.io/address/${defaultAccount}`
+                `${WALLET_BLOCKCHAIN_EXPLORER}${defaultAccount}`
               }
               target="_blank"
               rel="noopener noreferrer"

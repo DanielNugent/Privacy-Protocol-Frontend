@@ -80,8 +80,8 @@ export function ContractProvider({ children }: Props) {
           searched: true,
         }));
       })
-      .catch((err: any) => {
-        openErrorSnackbar("Error fetching scans!", err.transactionHash);
+      .catch(() => {
+        openErrorSnackbar("Error fetching scans!", "");
       });
   }
 
@@ -117,8 +117,8 @@ export function ContractProvider({ children }: Props) {
           usersTransactions: transactions,
         }));
       })
-      .catch((err: any) => {
-        openErrorSnackbar("Something went wrong!", err.transactionHash);
+      .catch(() => {
+        openErrorSnackbar("Something went wrong when calling the contract!", "");
       });
   }
 
@@ -147,7 +147,7 @@ export function ContractProvider({ children }: Props) {
         }));
       })
       .catch((err: any) => {
-        openErrorSnackbar("Something went wrong!", err.transactionHash);
+        openErrorSnackbar("Could not retrieve record location, check that TxID exists!", "");
       });
   }
 
