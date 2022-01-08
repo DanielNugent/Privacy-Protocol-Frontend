@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import TextField from "@mui/material/TextField";
@@ -17,33 +17,25 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 10px;
 `;
 
-interface Props {
-  initPublicIDError: boolean;
-  initHashOfRecordError: boolean;
-}
-
-const Transactions: NextPage<Props> = ({
-  initPublicIDError,
-  initHashOfRecordError,
-}) => {
-  const [publicIDError, setPublicIDError] =
-    useState<boolean>(initPublicIDError);
-  const [hashOfRecordError, setHashOfRecordError] = useState<boolean>(
-    initHashOfRecordError
-  );
+const Transactions: NextPage = () => {
   const router = useRouter();
   const { getAllTransactions, newTransaction, usersTransactions } =
     useContext(ContractContext);
+  const [publicIDError, setPublicIDError] = useState<boolean>(false);
+  const [hashOfRecordError, setHashOfRecordError] = useState<boolean>(false);
+
+  useEffect(() => {
+    let { publicID, hashOfRecord } = router.query;
+    if (publicID instanceof Array) setPublicIDError(true);
+    else setPublicIDError(!is256BitHex(publicID));
+    if (hashOfRecord instanceof Array) setHashOfRecordError(true);
+    else setHashOfRecordError(!is256BitHex(hashOfRecord));
+  }, []);
 
   function onChangePublicID(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let publicID: string = e.target.value;
-    setPublicIDError(
-      Boolean(
-        (publicID && !(publicID && publicID.match(/^[0-9a-f]+$/i))) ||
-          publicID.length !== 64
-      )
-    );
+    setPublicIDError(!is256BitHex(publicID));
     if (publicID === undefined || publicID === null || publicID.length === 0) {
       router.replace({
         pathname: router.pathname,
@@ -59,13 +51,7 @@ const Transactions: NextPage<Props> = ({
   function onChangeHashOfRecord(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let hashOfRecord: string = e.target.value;
-    setHashOfRecordError(
-      Boolean(
-        (hashOfRecord &&
-          !(hashOfRecord && hashOfRecord.match(/^[0-9a-f]+$/i))) ||
-          hashOfRecord.length !== 64
-      )
-    );
+    setHashOfRecordError(!is256BitHex(hashOfRecord));
     if (
       hashOfRecord === undefined ||
       hashOfRecord === null ||
@@ -157,16 +143,6 @@ const Transactions: NextPage<Props> = ({
       </Box>
     </Fragment>
   );
-};
-
-Transactions.getInitialProps = ({ query }) => {
-  let { publicID, hashOfRecord } = query;
-  if (publicID instanceof Array || hashOfRecord instanceof Array)
-    return { initPublicIDError: true, initHashOfRecordError: true };
-  return {
-    initPublicIDError: is256BitHex(publicID),
-    initHashOfRecordError: is256BitHex(hashOfRecord),
-  };
 };
 
 export default Transactions;

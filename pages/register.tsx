@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import TextField from "@mui/material/TextField";
@@ -11,28 +11,28 @@ import Link from "@mui/material/Link";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
-import {is256BitHex } from "../utils/crypto";
+import { is256BitHex } from "../utils/crypto";
 
 const ScanInput = styled(TextField)`
   margin-bottom: 20px;
 `;
 
-interface Props {
-  initError: boolean;
-}
-
-const Register: NextPage<Props> = ({ initError }) => {
-  const [error, setError] = useState<boolean>(initError);
+const Register: NextPage = () => {
   const router = useRouter();
-  const { getSimilarHashOfScans, registerHoS, similarScans, searched } =
+  const { getSimilarHashOfScans, registerHoS, similarScans } =
     useContext(ContractContext);
+  const [error, setError] = useState<boolean>(false);
+
+  useEffect(() => {
+    let { userHash } = router.query;
+    if (userHash instanceof Array) setError(true);
+    else setError(!is256BitHex(userHash));
+  }, []);
 
   function onChangeHoS(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let HoS: string = e.target.value;
-    setError(
-      Boolean((HoS && !(HoS && HoS.match(/^[0-9a-f]+$/i))) || HoS.length !== 64)
-    );
+    setError(!is256BitHex(HoS));
     if (HoS === undefined || HoS === null || HoS.length === 0) {
       router.replace({
         pathname: router.pathname,
@@ -111,7 +111,7 @@ Register.getInitialProps = ({ query }) => {
   let { userHash } = query;
   if (userHash instanceof Array) return { initError: true };
   return {
-    initError: is256BitHex(userHash)
+    initError: is256BitHex(userHash),
   };
 };
 

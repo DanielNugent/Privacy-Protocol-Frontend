@@ -1,7 +1,13 @@
 import { sha3_256 } from "js-sha3";
+
 function is256BitHex(s: string | undefined) {
   if (s === undefined || !s) return false;
-  return Boolean(!(s && s.match(/^[0-9a-f]+$/i)) || s.length !== 64);
+  return Boolean(s && s.match(/^[0-9a-f]+$/i) && s.length === 64);
+}
+
+function is512BitHex(s: string | undefined) {
+  if (s === undefined || !s) return false;
+  return Boolean(s && s.match(/^[0-9a-f]+$/i) && s.length === 128);
 }
 
 function strip64HexStart(s: string) {

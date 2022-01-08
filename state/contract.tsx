@@ -10,7 +10,7 @@ import {
 import Web3 from "web3";
 import { SnackbarContext } from "./snackbar";
 import { WalletContext } from "./wallet";
-import {CONTRACT_ADDRESS} from "../constants/contract"
+import { CONTRACT_ADDRESS } from "../constants/contract";
 const ABI = require("../public/PrivacyPreserving.json")["abi"];
 
 interface IContractState {
@@ -47,7 +47,7 @@ export const ContractContext = createContext<IContract>({
 });
 
 export function ContractProvider({ children }: Props) {
-  const { defaultAccount } = useContext(WalletContext);
+  const { defaultAccount, requestConnectWallet } = useContext(WalletContext);
   const { openErrorSnackbar, openSuccessSnackbar, openLoadingSnackbar } =
     useContext(SnackbarContext);
   const [contractState, setContractState] = useState<IContractState>({
@@ -60,9 +60,11 @@ export function ContractProvider({ children }: Props) {
   const [web3, setWeb3] = useState<any>();
 
   useEffect(() => {
-    let web3 = new Web3(window.ethereum);
-    setWeb3(new Web3(window.ethereum));
-    setMyContract(new web3.eth.Contract(ABI, CONTRACT_ADDRESS));
+    if (window.ethereum) {
+      let web3 = new Web3(window.ethereum);
+      setWeb3(new Web3(window.ethereum));
+      setMyContract(new web3.eth.Contract(ABI, CONTRACT_ADDRESS));
+    }
   }, []);
 
   function getSimilarHashOfScans(userHash: string) {
@@ -86,16 +88,22 @@ export function ContractProvider({ children }: Props) {
   }
 
   function registerHoS(userHash: string) {
-    openLoadingSnackbar("Registering hash of scan...");
-    MyContract.methods
-      .registerHashOfScan(hexString(userHash))
-      .send({ from: defaultAccount })
-      .then((result: any) => {
-        openSuccessSnackbar("Hash of scan registered!", result.transactionHash);
-      })
-      .catch((err: any) => {
-        openErrorSnackbar("Something went wrong!", err.transactionHash);
-      });
+    if (defaultAccount) {
+      openLoadingSnackbar("Registering hash of scan...");
+      MyContract.methods
+        .registerHashOfScan(hexString(userHash))
+        .send({ from: defaultAccount })
+        .then((result: any) => {
+          openSuccessSnackbar(
+            "Hash of scan registered!",
+            result.transactionHash
+          );
+        })
+        .catch((err: any) => {
+          openErrorSnackbar("Something went wrong!", err.transactionHash);
+        });
+    }
+    else openErrorSnackbar("Connect Wallet First!", "");
   }
 
   function getAllTransactions(publicID: string) {
@@ -118,11 +126,15 @@ export function ContractProvider({ children }: Props) {
         }));
       })
       .catch(() => {
-        openErrorSnackbar("Something went wrong when calling the contract!", "");
+        openErrorSnackbar(
+          "Something went wrong when calling the contract!",
+          ""
+        );
       });
   }
 
   function newTransaction(publicID: string, hashOfRecord: string) {
+    if (defaultAccount) {
     openLoadingSnackbar("Creating a new transaction...");
     MyContract.methods
       .addTransaction(hexString(publicID), hexString(hashOfRecord))
@@ -133,6 +145,8 @@ export function ContractProvider({ children }: Props) {
       .catch((err: any) => {
         openErrorSnackbar("Something went wrong!", err.transactionHash);
       });
+    }
+    else openErrorSnackbar("Connect Wallet First!", "");
   }
 
   function getRecord(txID: string) {
@@ -147,21 +161,27 @@ export function ContractProvider({ children }: Props) {
         }));
       })
       .catch((err: any) => {
-        openErrorSnackbar("Could not retrieve record location, check that TxID exists!", "");
+        openErrorSnackbar(
+          "Could not retrieve record location, check that TxID exists!",
+          ""
+        );
       });
   }
 
   function newRecord(txID: string, recordLocation: string) {
+    if(defaultAccount){
     openLoadingSnackbar("Adding some identifier...");
     MyContract.methods
       .storeRecordLocation(hexString(txID), recordLocation)
       .send({ from: defaultAccount })
       .then((result: any) => {
-        openSuccessSnackbar("New record linked to identifier!", "aa");
+        openSuccessSnackbar("New record linked to identifier!", result.transactionHash);
       })
       .catch((err: any) => {
         openErrorSnackbar("Something went wrong!", err.transactionHash);
       });
+    }
+    else openErrorSnackbar("Connect Wallet First!", "");
   }
 
   return (

@@ -5,6 +5,7 @@ import MuiAlert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import SnackbarContent from "@mui/material/SnackbarContent";
+import { TX_BLOCKCHAIN_EXPLORER } from "../constants/wallet";
 
 interface Props {
   children: React.ReactNode;
@@ -26,7 +27,7 @@ const TransactionAction = (txHash: string) => (
   <Button
     component={Link}
     target="_blank"
-    href={`https://rinkeby.etherscan.io/tx/${txHash}`}
+    href={`${TX_BLOCKCHAIN_EXPLORER}${txHash}`}
     rel="noopener noreferrer"
     color="inherit"
     size="small"
