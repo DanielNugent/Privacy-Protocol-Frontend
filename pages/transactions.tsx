@@ -30,12 +30,11 @@ const Transactions: NextPage = () => {
     else setPublicIDError(!is256BitHex(publicID));
     if (hashOfRecord instanceof Array) setHashOfRecordError(true);
     else setHashOfRecordError(!is256BitHex(hashOfRecord));
-  }, []);
+  }, [router.query]);
 
   function onChangePublicID(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let publicID: string = e.target.value;
-    setPublicIDError(!is256BitHex(publicID));
     if (publicID === undefined || publicID === null || publicID.length === 0) {
       router.replace({
         pathname: router.pathname,
@@ -51,7 +50,6 @@ const Transactions: NextPage = () => {
   function onChangeHashOfRecord(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let hashOfRecord: string = e.target.value;
-    setHashOfRecordError(!is256BitHex(hashOfRecord));
     if (
       hashOfRecord === undefined ||
       hashOfRecord === null ||

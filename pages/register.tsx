@@ -27,12 +27,11 @@ const Register: NextPage = () => {
     let { userHash } = router.query;
     if (userHash instanceof Array) setError(true);
     else setError(!is256BitHex(userHash));
-  }, []);
+  }, [router.query]);
 
   function onChangeHoS(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let HoS: string = e.target.value;
-    setError(!is256BitHex(HoS));
     if (HoS === undefined || HoS === null || HoS.length === 0) {
       router.replace({
         pathname: router.pathname,
