@@ -13,7 +13,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { WalletContext } from "../state/wallet";
 import Avatar from "@mui/material/Avatar";
 import { useRouter } from "next/router";
-import {WALLET_BLOCKCHAIN_EXPLORER} from "../constants/wallet";
+import { WALLET_BLOCKCHAIN_EXPLORER } from "../constants/wallet";
 const StyledLoadingButton = styled(LoadingButton)`
   min-width: 120px;
 `;
@@ -28,6 +28,8 @@ export default function Header(): ReactElement {
     defaultAccount,
     loading: walletLoading,
     errorMessage,
+    disconnected: walletDisconnected, 
+    requestConnectWallet
   } = useContext(WalletContext);
   const router = useRouter();
   const getButtonStyle = useCallback(
@@ -73,15 +75,16 @@ export default function Header(): ReactElement {
           {!walletLoading ? (
             <Button
               variant="contained"
-              color={errorMessage ? "error" : "primary"}
+              color={errorMessage && !walletDisconnected ? "error" : "primary"}
               component={MuiLink}
+              onClick={() => requestConnectWallet()}
               href={
-                !errorMessage &&
-                defaultAccount &&
-                `${WALLET_BLOCKCHAIN_EXPLORER}${defaultAccount}`
+                !errorMessage && defaultAccount
+                  ? `${WALLET_BLOCKCHAIN_EXPLORER}${defaultAccount}`
+                  : "#"
               }
-              target="_blank"
-              rel="noopener noreferrer"
+              target={!errorMessage && defaultAccount && "_blank"}
+              rel={!errorMessage && defaultAccount && "noopener noreferrer"}
               startIcon={
                 <Avatar sx={{ width: 24, height: 24 }} src="/metamask.png" />
               }
