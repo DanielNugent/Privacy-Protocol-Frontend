@@ -45,17 +45,25 @@ function numberToHexString(d: string) {
   return hexString(BigInt(d).toString(16).toLowerCase());
 }
 
+function padBinary(b: string){
+  let newB = b;
+  while(newB.length < 256){
+    newB = "0" + newB;
+  }
+  return newB;
+}
+
+
 function hammingDistance(simhash1: bigint, simhash2: bigint) {
   let distance = 0;
-  let s1Binary: string = simhash1.toString(2);
-  let s2Binary: string = simhash2.toString(2);
+  let s1Binary: string = padBinary(simhash1.toString(2));
+  let s2Binary: string = padBinary(simhash2.toString(2));
 
   for(let i = 0; i < s1Binary.length; i++){
     if(s1Binary.charAt(i) !== s2Binary.charAt(i)){
       distance++;
     }
   }
-  console.log(distance);
   return (distance/256);
 }
 
