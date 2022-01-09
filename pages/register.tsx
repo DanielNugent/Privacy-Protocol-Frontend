@@ -106,12 +106,4 @@ const Register: NextPage = () => {
   );
 };
 
-Register.getInitialProps = ({ query }) => {
-  let { userHash } = query;
-  if (userHash instanceof Array) return { initError: true };
-  return {
-    initError: is256BitHex(userHash),
-  };
-};
-
 export default Register;
