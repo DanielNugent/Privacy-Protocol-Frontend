@@ -87,7 +87,7 @@ function reducer(state: IFormState, action: IAction) {
       return {
         ...state,
         hashOfScan: action.value,
-        hashOfScanError: is256BitHex(action.value),
+        hashOfScanError: !is256BitHex(action.value),
       };
     case DATE_OF_BIRTH:
       return {
@@ -115,7 +115,7 @@ function reducer(state: IFormState, action: IAction) {
       return {
         ...state,
         publicID: action.value,
-        publicIDError: is256BitHex(action.value),
+        publicIDError: !is256BitHex(action.value),
       };
     case PINCODE:
       return {
@@ -127,25 +127,25 @@ function reducer(state: IFormState, action: IAction) {
       return {
         ...state,
         privateID: action.value,
-        privateIDError: is256BitHex(action.value),
+        privateIDError: !is256BitHex(action.value),
       };
     case KEY:
       return {
         ...state,
         key: action.value,
-        keyError: is256BitHex(action.value),
+        keyError: !is256BitHex(action.value),
       };
     case HASH_OF_RECORD:
       return {
         ...state,
         hashOfRecord: action.value,
-        hashOfRecordError: is256BitHex(action.value),
+        hashOfRecordError: !is256BitHex(action.value),
       };
     case TXID:
       return {
         ...state,
         txID: action.value,
-        txIDError: is256BitHex(action.value),
+        txIDError: !is256BitHex(action.value),
       };
     default:
       throw new Error();
@@ -163,6 +163,7 @@ export const ToolsFormContext = createContext<IFormContext>({
 
 export function ToolsFormProvider({ children }: Props) {
   const [formState, dispatch] = useReducer(reducer, initialFormState);
+  console.log(formState);
 
   const onChangeField = (field: string, e: any) => {
     dispatch({ type: field, value: e.target.value });
