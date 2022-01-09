@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import TextField from "@mui/material/TextField";
@@ -16,34 +16,29 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 10px;
 `;
 
-interface Props {
-  initTxLocationError: boolean;
-  initRecordLocationError: boolean;
-}
-
-const Identifiers: NextPage<Props> = ({
-  initTxLocationError,
-  initRecordLocationError,
-}) => {
-  const [txIDError, setTxID] = useState<boolean>(initTxLocationError);
-  const [recordLocationError, setRecordLocationError] = useState<boolean>(
-    initRecordLocationError
-  );
+const Identifiers: NextPage = () => {
   const router = useRouter();
+  const [txIDError, setTxID] = useState<boolean>(false);
+  const [recordLocationError, setRecordLocationError] = useState<boolean>(
+    false
+  );
   const {
     getRecord,
     newRecord,
     recordLocation: rLocation,
   } = useContext(ContractContext);
 
+  useEffect(() => {
+    let { txID, recordLocation } = router.query;
+    if (txID instanceof Array) setTxID(true);
+    else setTxID(!is256BitHex(txID));
+    if (recordLocation instanceof Array) setRecordLocationError(true);
+    else setRecordLocationError(!is256BitHex(recordLocation));
+  }, [router.query]);
+
   function onChangetxID(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     let txID: string = e.target.value;
-    setTxID(
-      Boolean(
-        (txID && !(txID && txID.match(/^[0-9a-f]+$/i))) || txID.length !== 64
-      )
-    );
     if (txID === undefined || txID === null || txID.length === 0) {
       router.replace({
         pathname: router.pathname,
@@ -164,16 +159,6 @@ const Identifiers: NextPage<Props> = ({
       </Box>
     </Fragment>
   );
-};
-
-Identifiers.getInitialProps = ({ query }) => {
-  let { txID, recordLocation } = query;
-  if (txID instanceof Array || recordLocation instanceof Array)
-    return { initTxLocationError: true, initRecordLocationError: true };
-  return {
-    initTxLocationError: is256BitHex(txID),
-    initRecordLocationError: !recordLocation,
-  };
 };
 
 export default Identifiers;
