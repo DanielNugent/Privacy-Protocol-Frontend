@@ -163,7 +163,6 @@ export const ToolsFormContext = createContext<IFormContext>({
 
 export function ToolsFormProvider({ children }: Props) {
   const [formState, dispatch] = useReducer(reducer, initialFormState);
-  console.log(formState);
 
   const onChangeField = (field: string, e: any) => {
     dispatch({ type: field, value: e.target.value });
