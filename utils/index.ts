@@ -1,4 +1,4 @@
-const THRESHOLD = 0.4;
+const THRESHOLD = 0.45;
 
 interface IScanData {
   hash: string;
