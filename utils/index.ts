@@ -16,11 +16,11 @@ function dateToYYYYMMDD(str: string) {
   let dateObj = new Date(str);
   let month = (dateObj.getUTCMonth() + 1).toString(); //months from 1-12
   let day = dateObj.getUTCDate().toString();
-  if(day.length === 1){
-    day = "0" + day
+  if (day.length === 1) {
+    day = "0" + day;
   }
-  if(month.length === 1){
-    month = "0" + month
+  if (month.length === 1) {
+    month = "0" + month;
   }
   let year = dateObj.getUTCFullYear().toString();
   return year + month + day;
@@ -44,22 +44,19 @@ function removeHexString0x(s: string) {
 function numberToHexString(d: string) {
   return hexString(BigInt(d).toString(16).toLowerCase());
 }
-function numberToHex(d: string) {
-  return BigInt(d).toString(16).toLowerCase();
-}
 
-function hammingWeight(l: bigint) {
-  let c;
-  for (c = 0; l; c++) {
-    l &= l - BigInt(1);
+function hammingDistance(simhash1: bigint, simhash2: bigint) {
+  let distance = 0;
+  let s1Binary: string = simhash1.toString(2);
+  let s2Binary: string = simhash2.toString(2);
+
+  for(let i = 0; i < s1Binary.length; i++){
+    if(s1Binary.charAt(i) !== s2Binary.charAt(i)){
+      distance++;
+    }
   }
-  return c;
-}
-
-function similarity(simhash1: bigint, simhash2: bigint) {
-  return (
-    hammingWeight(simhash1 & simhash2) / hammingWeight(simhash1 | simhash2)
-  );
+  console.log(distance);
+  return (distance/256);
 }
 
 function findSimilarScans(scan: string, scans: Array<string>) {
@@ -70,11 +67,12 @@ function findSimilarScans(scan: string, scans: Array<string>) {
   let results: Array<IScanData> = [];
   scans.forEach((s, idx) => {
     let scanHex: string = numberToHexString(s);
-    let sim: number = similarity(BigInt(userScan), BigInt(scanHex));
-    if (sim > THRESHOLD) {
+
+    let dist: number = hammingDistance(BigInt(userScan), BigInt(scanHex));
+    if (dist <= THRESHOLD) {
       results.push({
         hash: removeHexString0x(scanHex),
-        accuracy: Number(sim).toFixed(4),
+        accuracy: Number(dist).toFixed(6),
         id: idx,
       });
     }
@@ -104,7 +102,6 @@ function findUsersTransactions(
   return results;
 }
 export {
-  similarity,
   hexString,
   findSimilarScans,
   findUsersTransactions,

@@ -12,8 +12,8 @@ const scanColumns = [
   { field: "hash", headerName: "Hash of Scan", width: 600 },
   {
     field: "accuracy",
-    headerName: "Resemblance",
-    description: "How close the new scan resembles this one",
+    headerName: "Hamming distance",
+    description: "How close the new scan resembles this one (the lower the better).",
     width: 200,
   },
 ];
