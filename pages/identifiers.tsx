@@ -33,7 +33,7 @@ const Identifiers: NextPage = () => {
     if (txID instanceof Array) setTxID(true);
     else setTxID(!is256BitHex(txID));
     if (recordLocation instanceof Array) setRecordLocationError(true);
-    else setRecordLocationError(!is256BitHex(recordLocation));
+    else setRecordLocationError(!recordLocation);
   }, [router.query]);
 
   function onChangetxID(e: React.ChangeEvent<HTMLInputElement>) {

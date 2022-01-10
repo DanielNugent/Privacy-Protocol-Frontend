@@ -170,7 +170,7 @@ export function ContractProvider({ children }: Props) {
 
   function newRecord(txID: string, recordLocation: string) {
     if(defaultAccount){
-    openLoadingSnackbar("Adding some identifier...");
+    openLoadingSnackbar("Creating an identifier...");
     MyContract.methods
       .storeRecordLocation(hexString(txID), recordLocation)
       .send({ from: defaultAccount })
