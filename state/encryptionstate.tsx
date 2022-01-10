@@ -120,7 +120,6 @@ export function EncryptionStateProvider({ children }: Props) {
     let file = e.target.files[0];
     dispatch({ type: UPLOAD, value: file });
   };
-  console.log(encryptionState);
 
   const encryptFile = () => {
     if (encryptionState.file) {
