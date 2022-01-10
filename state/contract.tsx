@@ -100,7 +100,7 @@ export function ContractProvider({ children }: Props) {
           );
         })
         .catch((err: any) => {
-          openErrorSnackbar("Something went wrong!", err.transactionHash);
+          openErrorSnackbar("Something went wrong! That Scan might already be registered.", err.transactionHash);
         });
     }
     else openErrorSnackbar("Connect Wallet First!", "");

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext, useEffect } from "react";
+import React, { Fragment, useContext } from "react";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import TextField from "@mui/material/TextField";
@@ -6,71 +6,23 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import styled from "styled-components";
-import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import NextLink from "next/link";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
-import { is256BitHex } from "../utils/crypto";
+import { TransactionContext } from "../state/transactionstate";
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 10px;
 `;
 
 const Transactions: NextPage = () => {
-  const router = useRouter();
   const { getAllTransactions, newTransaction, usersTransactions } =
     useContext(ContractContext);
-  const [publicIDError, setPublicIDError] = useState<boolean>(false);
-  const [hashOfRecordError, setHashOfRecordError] = useState<boolean>(false);
+  const { formState, onChangePublicID, onChangeHashOfRecord } =
+    useContext(TransactionContext);
 
-  useEffect(() => {
-    let { publicID, hashOfRecord } = router.query;
-    if (publicID instanceof Array) setPublicIDError(true);
-    else setPublicIDError(!is256BitHex(publicID));
-    if (hashOfRecord instanceof Array) setHashOfRecordError(true);
-    else setHashOfRecordError(!is256BitHex(hashOfRecord));
-  }, [router.query]);
-
-  function onChangePublicID(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    let publicID: string = e.target.value;
-    if (publicID === undefined || publicID === null || publicID.length === 0) {
-      router.replace({
-        pathname: router.pathname,
-        query: hashOfRecordString ? { hashOfRecord: hashOfRecordString } : {},
-      });
-    } else
-      router.replace({
-        pathname: router.pathname,
-        query: { ...router.query, publicID: publicID },
-      });
-  }
-
-  function onChangeHashOfRecord(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    let hashOfRecord: string = e.target.value;
-    if (
-      hashOfRecord === undefined ||
-      hashOfRecord === null ||
-      hashOfRecord.length === 0
-    ) {
-      router.replace({
-        pathname: router.pathname,
-        query: publicIDString ? { publicID: publicIDString } : {},
-      });
-    } else
-      router.replace({
-        pathname: router.pathname,
-        query: { ...router.query, hashOfRecord: hashOfRecord },
-      });
-  }
-
-  const { publicID, hashOfRecord } = router.query;
-  const publicIDString: string =
-    !publicID || publicID instanceof Array ? "" : publicID;
-  const hashOfRecordString: string =
-    !hashOfRecord || hashOfRecord instanceof Array ? "" : hashOfRecord;
   return (
     <Fragment>
       <Box
@@ -92,16 +44,16 @@ const Transactions: NextPage = () => {
           label="PublicID"
           required
           fullWidth
-          value={publicIDString}
+          value={formState.publicID}
           onChange={onChangePublicID}
           id="fullWidth"
-          error={publicIDError}
+          error={formState.publicIDError}
           helperText="The PublicID should be a 256 bit string in Hexadecimal format"
           inputProps={{ maxLength: 64 }}
         />
-        <Typography style={{ marginBottom: 10 }}>
-          <Link href="/tools">Calculate my PublicID</Link>
-        </Typography>
+        <NextLink href="/tools" passHref>
+          <Link style={{ marginBottom: 10 }}>Calculate my PublicID</Link>
+        </NextLink>
         <StyledTextField
           InputProps={{
             startAdornment: (
@@ -110,30 +62,32 @@ const Transactions: NextPage = () => {
           }}
           label="Hash of record"
           fullWidth
-          value={hashOfRecordString}
+          value={formState.hashOfRecord}
           onChange={onChangeHashOfRecord}
           id="fullWidth"
-          error={hashOfRecordError}
+          error={formState.hashOfRecordError}
           helperText="The hash of the record should be a 256 bit string in Hexadecimal format"
           inputProps={{ maxLength: 64 }}
         />
-        <Typography style={{ marginBottom: 10 }}>
-          <Link href="/tools">Get a hash of my record</Link>
-        </Typography>
+        <NextLink href="/encrypt" passHref>
+          <Link style={{ marginBottom: 10 }}>Get a hash of my record</Link>
+        </NextLink>
         <Stack direction="row" spacing={4}>
           <Button
-            disabled={publicIDError}
+            disabled={formState.publicIDError}
             size="large"
             variant="contained"
-            onClick={() => getAllTransactions(publicIDString)}
+            onClick={() => getAllTransactions(formState.publicID)}
           >
             Find Transactions
           </Button>
           <Button
-            disabled={publicIDError || hashOfRecordError}
+            disabled={formState.publicIDError || formState.hashOfRecordError}
             size="large"
             variant="contained"
-            onClick={() => newTransaction(publicIDString, hashOfRecordString)}
+            onClick={() =>
+              newTransaction(formState.publicID, formState.hashOfRecord)
+            }
           >
             New Transaction
           </Button>

@@ -3,6 +3,9 @@ import { SnackbarProvider } from "./snackbar";
 import { ContractProvider } from "./contract";
 import { ToolsFormProvider } from "./toolsformstate";
 import { EncryptionStateProvider } from "./encryptionstate";
+import { RegisterStateProvider } from "./registerstate";
+import { TransactionStateProvider } from "./transactionstate";
+import { IdentifierStateProvider } from "../state/identifierstate";
 
 interface Props {
   children: React.ReactNode;
@@ -13,9 +16,15 @@ export default function CombinedProviders({ children }: Props) {
     <SnackbarProvider>
       <WalletProvider>
         <ContractProvider>
-          <ToolsFormProvider>
-            <EncryptionStateProvider>{children}</EncryptionStateProvider>
-          </ToolsFormProvider>
+          <RegisterStateProvider>
+            <TransactionStateProvider>
+              <IdentifierStateProvider>
+                <ToolsFormProvider>
+                  <EncryptionStateProvider>{children}</EncryptionStateProvider>
+                </ToolsFormProvider>
+              </IdentifierStateProvider>
+            </TransactionStateProvider>
+          </RegisterStateProvider>
         </ContractProvider>
       </WalletProvider>
     </SnackbarProvider>

@@ -1,0 +1,1 @@
+export const HASH_OF_SCAN = "HASH_OF_SCAN";

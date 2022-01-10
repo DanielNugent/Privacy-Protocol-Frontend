@@ -1,5 +1,4 @@
-import React, { Fragment, useState, useContext, useEffect } from "react";
-import { useRouter } from "next/router";
+import React, { Fragment, useContext } from "react";
 import type { NextPage } from "next";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -8,43 +7,21 @@ import Box from "@mui/material/Box";
 import styled from "styled-components";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import NextLink from "next/link";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomTable from "../components/customtable";
 import { ContractContext } from "../state/contract";
-import { is256BitHex } from "../utils/crypto";
+import { RegisterContext } from "../state/registerstate";
 
 const ScanInput = styled(TextField)`
   margin-bottom: 20px;
 `;
 
 const Register: NextPage = () => {
-  const router = useRouter();
   const { getSimilarHashOfScans, registerHoS, similarScans } =
     useContext(ContractContext);
-  const [error, setError] = useState<boolean>(false);
+  const { hashOfScan, hashOfScanError, onChangeHashOfScan } = useContext(RegisterContext);
 
-  useEffect(() => {
-    let { userHash } = router.query;
-    if (userHash instanceof Array) setError(true);
-    else setError(!is256BitHex(userHash));
-  }, [router.query]);
-
-  function onChangeHoS(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    let HoS: string = e.target.value;
-    if (HoS === undefined || HoS === null || HoS.length === 0) {
-      router.replace({
-        pathname: router.pathname,
-      });
-    } else
-      router.replace({
-        pathname: router.pathname,
-        query: { userHash: HoS },
-      });
-  }
-  const { userHash } = router.query;
-  const userHashString: string =
-    !userHash || userHash instanceof Array ? "" : userHash;
 
   return (
     <Fragment>
@@ -65,38 +42,39 @@ const Register: NextPage = () => {
             ),
           }}
           fullWidth
-          value={userHash ? userHash : ""}
+          value={hashOfScan}
           label="Hash of Scan"
           required
           id="fullWidth"
-          error={error}
+          error={hashOfScanError}
           helperText="The Hash of the Scan should be a 256 bit string in Hexadecimal format"
-          onChange={onChangeHoS}
+          onChange={onChangeHashOfScan}
           inputProps={{ maxLength: 64 }}
         />
         <Typography style={{ marginBottom: 10 }}>
-          <Link
-            rel="noopener noreferrer"
-            target="_blank"
+          <NextLink
+            passHref
             href="https://daniel-nugent.gitbook.io/the-privacy-protocol/guides/obtaining-your-iris-scan"
           >
-            How do I get a hash of my Iris Scan?
-          </Link>
+            <Link rel="noopener noreferrer" target="_blank">
+              How do I get a hash of my Iris Scan?
+            </Link>
+          </NextLink>
         </Typography>
         <Stack direction="row" spacing={4}>
           <Button
-            onClick={() => registerHoS(userHashString)}
-            disabled={error}
+            onClick={() => registerHoS(hashOfScan)}
+            disabled={hashOfScanError}
             size="large"
             variant="contained"
           >
             Register
           </Button>
           <Button
-            disabled={error}
+            disabled={hashOfScanError}
             size="large"
             variant="contained"
-            onClick={() => getSimilarHashOfScans(userHashString)}
+            onClick={() => getSimilarHashOfScans(hashOfScan)}
           >
             Search
           </Button>
