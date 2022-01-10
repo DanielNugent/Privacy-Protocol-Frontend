@@ -93,6 +93,7 @@ const Tools: NextPage = () => {
           <FormControl style={{ minWidth: 180 }}>
             <InputLabel id="gender-input">Gender</InputLabel>
             <Select
+              id="gender-select"
               value={formState.gender}
               onChange={(e) => onChangeField(GENDER, e)}
             >

@@ -17,6 +17,7 @@
     "@mui/styles": "^5.2.3",
     "@mui/x-data-grid": "^5.2.1",
     "big-integer": "^1.6.51",
+    "crypto-js": "^4.1.1",
     "ethers": "^5.5.2",
     "js-sha3": "^0.8.0",
     "next": "^12.0.7",
