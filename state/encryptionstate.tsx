@@ -120,8 +120,8 @@ export function EncryptionStateProvider({ children }: Props) {
         let reader = new FileReader();
         reader.onload = () => {
           let key = crypto.enc.Hex.parse(encryptionState.key);
-          console.log(key);
           let IV = crypto.enc.Hex.parse("00000000000000000000000000000000");
+          //@ts-ignore - Typescript doesn't pick up reader type correctly 
           let wordArray = crypto.lib.WordArray.create(reader.result); // Convert: ArrayBuffer -> WordArray
           let encrypted = crypto.AES.encrypt(wordArray, key, {
             iv: IV,
@@ -151,6 +151,7 @@ export function EncryptionStateProvider({ children }: Props) {
         reader.onload = () => {
           let key = crypto.enc.Hex.parse(encryptionState.key);
           let IV = crypto.enc.Hex.parse("00000000000000000000000000000000");
+          //@ts-ignore - Typescript doesn't pick up reader type correctly 
           let decrypted = crypto.AES.decrypt(reader.result, key, {
             iv: IV,
             mode: crypto.mode.CBC,
