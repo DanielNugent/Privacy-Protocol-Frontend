@@ -189,7 +189,7 @@ export function ToolsFormProvider({ children }: Props) {
       type: KEY,
       value:
         formState.publicID.substring(0, 32) +
-        formState.privateID.substring(0, 32),
+        formState.privateID.substring(32, 64),
     });
   };
 
