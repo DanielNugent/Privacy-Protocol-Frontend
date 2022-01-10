@@ -161,7 +161,7 @@ const Tools: NextPage = () => {
           label="Encyption/Decryption Key"
           fullWidth
           id="encryption-decryption-key"
-          inputProps={{ maxLength: 64 }}
+          inputProps={{ maxLength: 64, readOnly: true }}
         />
 
         <MarginTextField
@@ -192,7 +192,7 @@ const Tools: NextPage = () => {
           label="TxID"
           fullWidth
           id="tx-id"
-          inputProps={{ maxLength: 64 }}
+          inputProps={{ maxLength: 64, readOnly: true}}
         />
 
         <Stack mt={2} direction="row" spacing={4}>

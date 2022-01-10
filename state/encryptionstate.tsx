@@ -8,6 +8,7 @@ import {
   UPLOAD,
   LOADING,
   ERROR,
+  HASH_OF_RECORD,
 } from "../constants/encryption";
 import { SnackbarContext } from "./snackbar";
 import { convertWordArrayToUint8Array } from "../utils/crypto";
@@ -16,6 +17,7 @@ import crypto from "crypto-js";
 interface IEncryptionState {
   key: string;
   keyError: boolean;
+  hashOfRecord: string;
   loading: boolean;
   uploaded: boolean;
   mode: string;
@@ -42,6 +44,7 @@ interface IEncryptionContext {
 const initialEncryptionState = {
   key: "",
   keyError: true,
+  hashOfRecord: "",
   loading: false,
   uploaded: false,
   mode: ENCRYPTION,
@@ -82,7 +85,11 @@ function reducer(state: IEncryptionState, action: IAction) {
         loading: false,
         error: action.value,
       };
-
+    case HASH_OF_RECORD:
+      return {
+        ...state,
+        hashOfRecord: action.value,
+      };
     default:
       throw new Error();
   }
@@ -121,13 +128,14 @@ export function EncryptionStateProvider({ children }: Props) {
         reader.onload = () => {
           let key = crypto.enc.Hex.parse(encryptionState.key);
           let IV = crypto.enc.Hex.parse("00000000000000000000000000000000");
-          //@ts-ignore - Typescript doesn't pick up reader type correctly 
+          //@ts-ignore - Typescript doesn't pick up reader type correctly
           let wordArray = crypto.lib.WordArray.create(reader.result); // Convert: ArrayBuffer -> WordArray
           let encrypted = crypto.AES.encrypt(wordArray, key, {
             iv: IV,
             mode: crypto.mode.CBC,
             padding: crypto.pad.Pkcs7,
           }).toString(); // Encryption: I: WordArray -> O: -> Base64 encoded string (OpenSSL-format)
+          dispatch({ type: HASH_OF_RECORD, value: sha3(encrypted) });
           let fileEnc = new Blob([encrypted]); // Create blob from string
           openSuccessSnackbar("File encrypted, now downloading...", "");
           let a = document.createElement("a");
@@ -151,7 +159,7 @@ export function EncryptionStateProvider({ children }: Props) {
         reader.onload = () => {
           let key = crypto.enc.Hex.parse(encryptionState.key);
           let IV = crypto.enc.Hex.parse("00000000000000000000000000000000");
-          //@ts-ignore - Typescript doesn't pick up reader type correctly 
+          //@ts-ignore - Typescript doesn't pick up reader type correctly
           let decrypted = crypto.AES.decrypt(reader.result, key, {
             iv: IV,
             mode: crypto.mode.CBC,

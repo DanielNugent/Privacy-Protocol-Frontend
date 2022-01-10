@@ -20,8 +20,13 @@ const StyledTextField = styled(TextField)`
 interface Props {}
 
 export default function Encrypt({}: Props): ReactElement {
-  const { encryptionState, onChangeKey, uploadFile, onChangeMode, handleEncryptDecrypt } =
-    useContext(EncryptionContext);
+  const {
+    encryptionState,
+    onChangeKey,
+    uploadFile,
+    onChangeMode,
+    handleEncryptDecrypt,
+  } = useContext(EncryptionContext);
   return (
     <Fragment>
       <Box
@@ -54,7 +59,7 @@ export default function Encrypt({}: Props): ReactElement {
           alignItems="center"
           spacing={8}
           mt={1}
-          mb={1}
+          mb={3}
         >
           <FormControl style={{ minWidth: 180 }}>
             <InputLabel id="encrypt-decrypt-sel-label">Mode</InputLabel>
@@ -97,6 +102,19 @@ export default function Encrypt({}: Props): ReactElement {
             Encrypt/Decrypt File
           </Button>
         </Stack>
+        <StyledTextField
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">0x</InputAdornment>
+            ),
+          }}
+          label="Hash of record"
+          value={encryptionState.hashOfRecord}
+          fullWidth
+          helperText="When you encrypt a record, the hash of the record is automatically generated for you!"
+          id="fullWidth"
+          inputProps={{ maxLength: 64, readOnly: true }}
+        />
       </Box>
     </Fragment>
   );

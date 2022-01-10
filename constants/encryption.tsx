@@ -5,3 +5,4 @@ export const DECRYPTION = "DECRYPTION";
 export const UPLOAD = "UPLOAD";
 export const LOADING = "LOADING";
 export const ERROR = "ERROR";
+export const HASH_OF_RECORD = "HASH_OF_RECORD";
