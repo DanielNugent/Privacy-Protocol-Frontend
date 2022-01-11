@@ -24,7 +24,7 @@ export default function Footer(): ReactElement {
           <GitHubIcon />
         </IconButton>
         <IconButton
-          href="https://daniel-nugent.gitbook.io/the-privacy-protocol/"
+          href="https://docs.theprivacyprotocol.xyz//"
           rel="noopener noreferrer"
           target="_blank"
           aria-label="docs"

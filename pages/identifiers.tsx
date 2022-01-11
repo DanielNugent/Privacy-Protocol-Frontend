@@ -78,7 +78,7 @@ const Identifiers: NextPage = () => {
         />
 
         <NextLink
-          href="https://daniel-nugent.gitbook.io/the-privacy-protocol/guides/usage-pattern#storing-a-new-record"
+          href="https://docs.theprivacyprotocol.xyz/guides/usage-pattern#storing-a-new-record"
           passHref
         >
           <Link

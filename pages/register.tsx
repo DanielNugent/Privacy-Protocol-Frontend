@@ -54,7 +54,7 @@ const Register: NextPage = () => {
         <Typography style={{ marginBottom: 10 }}>
           <NextLink
             passHref
-            href="https://daniel-nugent.gitbook.io/the-privacy-protocol/guides/obtaining-your-iris-scan"
+            href="https://docs.theprivacyprotocol.xyz/guides/obtaining-your-iris-scan"
           >
             <Link rel="noopener noreferrer" target="_blank">
               How do I get a hash of my Iris Scan?
