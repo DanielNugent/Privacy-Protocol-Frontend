@@ -42,7 +42,6 @@ export function WalletProvider({ children }: Props) {
     loading: true,
     disconnected: false,
   });
-  
 
   function requestConnectWallet() {
     if (window.ethereum) {
@@ -60,6 +59,8 @@ export function WalletProvider({ children }: Props) {
           setWalletState((prevState) => ({
             ...prevState,
             loading: false,
+            disconnected: true,
+            errorMessage: GENERIC_MESSAGE
           }));
         });
     } else {
@@ -97,7 +98,7 @@ export function WalletProvider({ children }: Props) {
       setWalletState((prevState) => ({
         ...prevState,
         errorMessage: WRONG_CHAIN_MESSAGE,
-        disconnected: false
+        disconnected: false,
       }));
   }
 
