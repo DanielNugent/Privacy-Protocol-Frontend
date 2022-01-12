@@ -1,4 +1,4 @@
-import React, { ReactElement, Fragment, useContext } from "react";
+import React, { ReactElement, Fragment, useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,6 +10,7 @@ import styled from "styled-components";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
+import Popover from "@mui/material/Popover";
 import { EncryptionContext } from "../state/encryptionstate";
 import { ENCRYPTION, DECRYPTION } from "../constants/encryption";
 
@@ -25,6 +26,18 @@ export default function Encrypt(): ReactElement {
     onChangeMode,
     handleEncryptDecrypt,
   } = useContext(EncryptionContext);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handlePopoverOpen = (event: any) => {
+    if (encryptionState.file && encryptionState.file.name)
+      setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <Fragment>
       <Box
@@ -78,6 +91,9 @@ export default function Encrypt(): ReactElement {
           />
           <label htmlFor="upload-button-file">
             <Button
+              aria-owns={open ? "mouse-over-popover" : undefined}
+              onMouseEnter={handlePopoverOpen}
+              onMouseLeave={handlePopoverClose}
               component="span"
               size="large"
               color={encryptionState.uploaded ? "success" : "primary"}
@@ -86,6 +102,28 @@ export default function Encrypt(): ReactElement {
               {encryptionState.uploaded ? "File Uploaded" : "Upload File"}
             </Button>
           </label>
+          <Popover
+            id="mouse-over-popover"
+            sx={{
+              pointerEvents: "none",
+            }}
+            open={open}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            onClose={handlePopoverClose}
+            disableRestoreFocus
+          >
+            {encryptionState.file && encryptionState.file.name && (
+              <Typography sx={{ p: 1 }}>{encryptionState.file.name}</Typography>
+            )}
+          </Popover>
           <Button
             disabled={
               encryptionState.keyError ||

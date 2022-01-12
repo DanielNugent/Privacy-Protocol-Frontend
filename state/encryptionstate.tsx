@@ -118,7 +118,7 @@ export function EncryptionStateProvider({ children }: Props) {
 
   const uploadFile = (e: any) => {
     let file = e.target.files[0];
-    dispatch({ type: UPLOAD, value: file });
+    if (file) dispatch({ type: UPLOAD, value: file });
   };
 
   const encryptFile = () => {
