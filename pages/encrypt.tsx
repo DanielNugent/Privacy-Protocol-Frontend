@@ -17,9 +17,7 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 10px;
 `;
 
-interface Props {}
-
-export default function Encrypt({}: Props): ReactElement {
+export default function Encrypt(): ReactElement {
   const {
     encryptionState,
     onChangeKey,
