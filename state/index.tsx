@@ -6,27 +6,31 @@ import { EncryptionStateProvider } from "./encryptionstate";
 import { RegisterStateProvider } from "./registerstate";
 import { TransactionStateProvider } from "./transactionstate";
 import { IdentifierStateProvider } from "../state/identifierstate";
-
+import ThemeProvider from "../state/theme";
 interface Props {
   children: React.ReactNode;
 }
 
 export default function CombinedProviders({ children }: Props) {
   return (
-    <SnackbarProvider>
-      <WalletProvider>
-        <ContractProvider>
-          <RegisterStateProvider>
-            <TransactionStateProvider>
-              <IdentifierStateProvider>
-                <ToolsFormProvider>
-                  <EncryptionStateProvider>{children}</EncryptionStateProvider>
-                </ToolsFormProvider>
-              </IdentifierStateProvider>
-            </TransactionStateProvider>
-          </RegisterStateProvider>
-        </ContractProvider>
-      </WalletProvider>
-    </SnackbarProvider>
+    <ThemeProvider>
+      <SnackbarProvider>
+        <WalletProvider>
+          <ContractProvider>
+            <RegisterStateProvider>
+              <TransactionStateProvider>
+                <IdentifierStateProvider>
+                  <ToolsFormProvider>
+                    <EncryptionStateProvider>
+                      {children}
+                    </EncryptionStateProvider>
+                  </ToolsFormProvider>
+                </IdentifierStateProvider>
+              </TransactionStateProvider>
+            </RegisterStateProvider>
+          </ContractProvider>
+        </WalletProvider>
+      </SnackbarProvider>
+    </ThemeProvider>
   );
 }
