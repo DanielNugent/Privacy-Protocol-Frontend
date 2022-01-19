@@ -20,7 +20,7 @@ const HeroText = styled(Typography)`
   background-image: linear-gradient(315deg, #f9c5d1 0%, #9795ef 74%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-weight: 500;
+  font-weight: 600;
   z-index: 1;
 `;
 
@@ -53,7 +53,7 @@ function LandingPage(): ReactElement {
             height: "100%",
           }}
         >
-          <HeroText variant="h1" gutterBottom align="center">
+          <HeroText variant="h1" sx={{fontWeight: 600}} gutterBottom align="center">
             The Privacy Protocol
           </HeroText>
           <Stack direction="row" spacing={4}>
