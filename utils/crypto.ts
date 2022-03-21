@@ -27,6 +27,7 @@ function sha3(s: string) {
   return sha3_256(s.toLowerCase());
 }
 
+
 function convertWordArrayToUint8Array(wordArray: any) {
   let arrayOfWords = wordArray.hasOwnProperty("words") ? wordArray.words : [];
   let length = wordArray.hasOwnProperty("sigBytes")
@@ -46,4 +47,4 @@ function convertWordArrayToUint8Array(wordArray: any) {
   return uInt8Array;
 }
 
-export { sha3, is256BitHex, convertWordArrayToUint8Array };
+export { sha3, is256BitHex, is512BitHex, convertWordArrayToUint8Array };

@@ -1,5 +1,5 @@
 import React, { useReducer, createContext } from "react";
-import { is256BitHex } from "../utils/crypto";
+import { is256BitHex, is512BitHex } from "../utils/crypto";
 import { HASH_OF_SCAN } from "../constants/register";
 interface IRegisterState {
   hashOfScan: string;
@@ -32,7 +32,7 @@ function reducer(state: IRegisterState, action: IAction) {
       return {
         ...state,
         hashOfScan: action.value,
-        hashOfScanError: !is256BitHex(action.value),
+        hashOfScanError: !is512BitHex(action.value),
       };
     default:
       throw new Error();

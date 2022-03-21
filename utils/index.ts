@@ -1,4 +1,4 @@
-const THRESHOLD = 0.45;
+const THRESHOLD = 0.5;
 
 interface IScanData {
   hash: string;
@@ -8,7 +8,6 @@ interface IScanData {
 
 interface ITransaction {
   hashOfRecord: string;
-  publicID: string;
   id: number;
 }
 
@@ -37,6 +36,14 @@ function hexString(s: string) {
   return ("0x" + tempS).valueOf();
 }
 
+function hexString512Bits(s: string) {
+  let tempS: string = s;
+  while (tempS.length < 128) {
+    tempS = "0" + tempS;
+  }
+  return ("0x" + tempS).valueOf();
+}
+
 function removeHexString0x(s: string) {
   return s.substring(2);
 }
@@ -45,35 +52,59 @@ function numberToHexString(d: string) {
   return hexString(BigInt(d).toString(16).toLowerCase());
 }
 
-function padBinary(b: string){
+function two256IntTo512Hex(left: string, right: string) {
+  return hexString512Bits(
+    BigInt(
+      "0b" +
+        padBinary256(BigInt(left).toString(2)) +
+        padBinary256(BigInt(right).toString(2))
+    )
+      .toString(16)
+      .toLowerCase()
+  );
+}
+
+function padBinary256(b: string) {
   let newB = b;
-  while(newB.length < 256){
+  while (newB.length < 256) {
     newB = "0" + newB;
   }
   return newB;
 }
 
+function padBinary512(b: string) {
+  let newB = b;
+  while (newB.length < 512) {
+    newB = "0" + newB;
+  }
+  return newB;
+}
 
 function hammingDistance(simhash1: bigint, simhash2: bigint) {
+  //console.log(simhash1, simhash2)
   let distance = 0;
-  let s1Binary: string = padBinary(simhash1.toString(2));
-  let s2Binary: string = padBinary(simhash2.toString(2));
+  let s1Binary: string = padBinary512(simhash1.toString(2));
+  let s2Binary: string = padBinary512(simhash2.toString(2));
 
-  for(let i = 0; i < s1Binary.length; i++){
-    if(s1Binary.charAt(i) !== s2Binary.charAt(i)){
+  for (let i = 0; i < s1Binary.length; i++) {
+    if (s1Binary.charAt(i) !== s2Binary.charAt(i)) {
       distance++;
     }
   }
-  return (distance/256);
+  return distance / 512;
 }
 
-function findSimilarScans(scan: string, scans: Array<string>) {
+function findSimilarScans(scan: string, scans: Array<[string, string]>) {
+  let processedScans = scans.map((scan, idx) =>
+    two256IntTo512Hex(scan[0], scan[1])
+  );
+  console.log(processedScans[1]);
   let userScan: string = scan;
   if (userScan.charAt(1) !== "x") {
     userScan = `0x${scan}`;
   }
   let results: Array<IScanData> = [];
-  scans.forEach((s, idx) => {
+  processedScans.forEach((s, idx) => {
     let scanHex: string = numberToHexString(s);
 
     let dist: number = hammingDistance(BigInt(userScan), BigInt(scanHex));
@@ -98,23 +129,22 @@ function findUsersTransactions(
   }
   let results: Array<ITransaction> = [];
   transactions.forEach((tx, idx) => {
-    let txHexID: string = numberToHexString(tx.publicID);
-    if (txHexID === publicIDHex) {
-      results.push({
-        publicID: txHexID,
-        hashOfRecord: removeHexString0x(numberToHexString(tx.hashOfRecord)),
-        id: idx,
-      });
-    }
+    results.push({
+      hashOfRecord: removeHexString0x(numberToHexString(tx.hashOfRecord)),
+      id: idx,
+    });
   });
   return results;
 }
 export {
   hexString,
+  hexString512Bits,
   findSimilarScans,
   findUsersTransactions,
   truncate,
   dateToYYYYMMDD,
+  numberToHexString,
+  two256IntTo512Hex,
   type IScanData,
   type ITransaction,
 };

@@ -6,6 +6,9 @@ import {
   IScanData,
   ITransaction,
   hexString,
+  hexString512Bits,
+  numberToHexString,
+  two256IntTo512Hex
 } from "../utils/index";
 import Web3 from "web3";
 import { SnackbarContext } from "./snackbar";
@@ -71,7 +74,7 @@ export function ContractProvider({ children }: Props) {
     MyContract.methods
       .getHashOfScans()
       .call()
-      .then((result: Array<string>) => {
+      .then((result: Array<[string, string]>) => {
         let similarScans: Array<IScanData> = findSimilarScans(userHash, result);
         if (similarScans.length === 0)
           openLoadingSnackbar("No similar scans found.");
@@ -88,10 +91,15 @@ export function ContractProvider({ children }: Props) {
   }
 
   function registerHoS(userHash: string) {
+    //split the hash in 2
     if (defaultAccount) {
       openLoadingSnackbar("Registering hash of scan...");
+      //register a 512 bit HoS
+      let leftHex = hexString(userHash.substring(0, 64))
+      let rightHex = hexString(userHash.substring(64))
+      console.log(leftHex, rightHex)
       MyContract.methods
-        .registerHashOfScan(hexString(userHash))
+        .registerHashOfScan(leftHex, rightHex)
         .send({ from: defaultAccount })
         .then((result: any) => {
           openSuccessSnackbar(
@@ -100,26 +108,29 @@ export function ContractProvider({ children }: Props) {
           );
         })
         .catch((err: any) => {
-          openErrorSnackbar("Something went wrong! That Scan might already be registered.", err.transactionHash);
+          console.log(err);
+          openErrorSnackbar(
+            "Something went wrong! That Scan might already be registered.",
+            err.transactionHash
+          );
         });
-    }
-    else openErrorSnackbar("Connect Wallet First!", "");
+    } else openErrorSnackbar("Connect Wallet First!", "");
   }
 
   function getAllTransactions(publicID: string) {
     MyContract.methods
-      .getTransactions()
+      .getTransactions(hexString(publicID))
       .call()
-      .then((result: any) => {
-        let transactions: Array<ITransaction> = findUsersTransactions(
-          publicID,
-          result
-        );
-        if (transactions.length === 0) {
+      .then((result: Array<string>) => {
+        console.log(result);
+        if (result.length === 0) {
           openLoadingSnackbar("No transactions found for that PublicID");
         } else {
           openSuccessSnackbar("Found the transactions!", "");
         }
+        let transactions: ITransaction[] = result.map((item, idx) => {
+          return { hashOfRecord: numberToHexString(item), id: idx };
+        });
         setContractState((prevState) => ({
           ...prevState,
           usersTransactions: transactions,
@@ -135,18 +146,20 @@ export function ContractProvider({ children }: Props) {
 
   function newTransaction(publicID: string, hashOfRecord: string) {
     if (defaultAccount) {
-    openLoadingSnackbar("Creating a new transaction...");
-    MyContract.methods
-      .addTransaction(hexString(publicID), hexString(hashOfRecord))
-      .send({ from: defaultAccount })
-      .then((result: any) => {
-        openSuccessSnackbar("New transaction created!", result.transactionHash);
-      })
-      .catch((err: any) => {
-        openErrorSnackbar("Something went wrong!", err.transactionHash);
-      });
-    }
-    else openErrorSnackbar("Connect Wallet First!", "");
+      openLoadingSnackbar("Creating a new transaction...");
+      MyContract.methods
+        .addTransaction(hexString(publicID), hexString(hashOfRecord))
+        .send({ from: defaultAccount })
+        .then((result: any) => {
+          openSuccessSnackbar(
+            "New transaction created!",
+            result.transactionHash
+          );
+        })
+        .catch((err: any) => {
+          openErrorSnackbar("Something went wrong!", err.transactionHash);
+        });
+    } else openErrorSnackbar("Connect Wallet First!", "");
   }
 
   function getRecord(txID: string) {
@@ -169,19 +182,21 @@ export function ContractProvider({ children }: Props) {
   }
 
   function newRecord(txID: string, recordLocation: string) {
-    if(defaultAccount){
-    openLoadingSnackbar("Creating an identifier...");
-    MyContract.methods
-      .storeRecordLocation(hexString(txID), recordLocation)
-      .send({ from: defaultAccount })
-      .then((result: any) => {
-        openSuccessSnackbar("New record linked to identifier!", result.transactionHash);
-      })
-      .catch((err: any) => {
-        openErrorSnackbar("Something went wrong!", err.transactionHash);
-      });
-    }
-    else openErrorSnackbar("Connect Wallet First!", "");
+    if (defaultAccount) {
+      openLoadingSnackbar("Creating an identifier...");
+      MyContract.methods
+        .storeRecordLocation(hexString(txID), recordLocation)
+        .send({ from: defaultAccount })
+        .then((result: any) => {
+          openSuccessSnackbar(
+            "New record linked to identifier!",
+            result.transactionHash
+          );
+        })
+        .catch((err: any) => {
+          openErrorSnackbar("Something went wrong!", err.transactionHash);
+        });
+    } else openErrorSnackbar("Connect Wallet First!", "");
   }
 
   return (

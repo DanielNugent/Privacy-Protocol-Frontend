@@ -1,5 +1,5 @@
 import React, { useReducer, createContext } from "react";
-import { sha3, is256BitHex } from "../utils/crypto";
+import { sha3, is256BitHex, is512BitHex } from "../utils/crypto";
 import { dateToYYYYMMDD } from "../utils";
 import {
   HASH_OF_SCAN,
@@ -8,6 +8,7 @@ import {
   COUNTRY_OF_BIRTH,
   PUBLIC_ID,
   PINCODE,
+  SSN,
   PRIVATE_ID,
   KEY,
   HASH_OF_RECORD,
@@ -25,6 +26,7 @@ interface IFormState {
   };
   publicID: string;
   pincode: string;
+  SSN: string;
   privateID: string;
   key: string;
   hashOfRecord: string;
@@ -35,6 +37,7 @@ interface IFormState {
   countryOfBirthError: boolean;
   publicIDError: boolean;
   pincodeError: boolean;
+  SSNError: boolean;
   privateIDError: boolean;
   keyError: boolean;
   hashOfRecordError: boolean;
@@ -65,6 +68,7 @@ const initialFormState = {
   countryOfBirth: { code: "AF", label: "Afghanistan", phone: "93" },
   publicID: "",
   pincode: "",
+  SSN: "",
   privateID: "",
   key: "",
   hashOfRecord: "",
@@ -75,6 +79,7 @@ const initialFormState = {
   countryOfBirthError: false,
   publicIDError: true,
   pincodeError: true,
+  SSNError: true,
   privateIDError: true,
   keyError: true,
   hashOfRecordError: true,
@@ -87,7 +92,7 @@ function reducer(state: IFormState, action: IAction) {
       return {
         ...state,
         hashOfScan: action.value,
-        hashOfScanError: !is256BitHex(action.value),
+        hashOfScanError: !is512BitHex(action.value),
       };
     case DATE_OF_BIRTH:
       return {
@@ -121,8 +126,14 @@ function reducer(state: IFormState, action: IAction) {
       return {
         ...state,
         pincode: action.value,
-        pincodeError: !action.value,
+        pincodeError: !action.value || action.value.length < 6,
       };
+    case SSN:
+      return {
+        ...state,
+        SSN: action.value,
+        SSNError: !action.value || action.value.length < 6
+      }
     case PRIVATE_ID:
       return {
         ...state,
@@ -179,7 +190,7 @@ export function ToolsFormProvider({ children }: Props) {
 
   const getPrivateID = () => {
     let hash: string = sha3(
-      formState.hashOfScan + formState.publicID + formState.pincode
+      formState.hashOfScan + formState.SSN + formState.pincode
     );
     dispatch({ type: PRIVATE_ID, value: hash });
   };

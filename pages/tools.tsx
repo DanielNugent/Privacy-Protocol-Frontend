@@ -20,6 +20,7 @@ import {
   GENDER,
   PUBLIC_ID,
   PINCODE,
+  SSN,
   PRIVATE_ID,
   KEY,
   HASH_OF_RECORD,
@@ -66,8 +67,8 @@ const Tools: NextPage = () => {
           label="Hash of the scan"
           fullWidth
           id="hash-of-scan"
-          helperText="The hashOfScan should be a 256 bit string in Hexadecimal format"
-          inputProps={{ maxLength: 64 }}
+          helperText="The hashOfScan should be a 512 bit string in Hexadecimal format"
+          inputProps={{ maxLength: 128 }}
         />
 
         <Stack
@@ -120,19 +121,32 @@ const Tools: NextPage = () => {
           helperText="The PublicID should be a 256 bit string in Hexadecimal format"
           inputProps={{ maxLength: 64 }}
         />
-
-        <MarginTextField
-          label="Pin code"
-          value={formState.pincode}
-          error={formState.pincodeError}
-          onChange={(e) => onChangeField(PINCODE, e)}
-          required
-          type="password"
-          fullWidth
-          id="pincode"
-          inputProps={{ maxLength: 64 }}
-        />
-
+        <Stack
+          direction="row"
+          justifyContent="space-evenly"
+          alignItems="center"
+          spacing={12}
+        >
+          <MarginTextField
+            label="PIN"
+            value={formState.pincode}
+            error={formState.pincodeError}
+            onChange={(e) => onChangeField(PINCODE, e)}
+            required
+            type="password"
+            id="pincode"
+            inputProps={{ maxLength: 50 }}
+          />
+          <MarginTextField
+            label="SSN"
+            value={formState.SSN}
+            error={formState.SSNError}
+            onChange={(e) => onChangeField(SSN, e)}
+            required
+            id="pincode"
+            inputProps={{ maxLength: 15 }}
+          />
+        </Stack>
         <MarginTextField
           InputProps={{
             startAdornment: (
@@ -192,7 +206,7 @@ const Tools: NextPage = () => {
           label="TxID"
           fullWidth
           id="tx-id"
-          inputProps={{ maxLength: 64, readOnly: true}}
+          inputProps={{ maxLength: 64, readOnly: true }}
         />
 
         <Stack mt={2} direction="row" spacing={4}>
@@ -211,7 +225,11 @@ const Tools: NextPage = () => {
           </Button>
           <Button
             onClick={() => getPrivateID()}
-            disabled={formState.publicIDError || formState.pincodeError}
+            disabled={
+              formState.hashOfScanError ||
+              formState.pincodeError ||
+              formState.SSNError
+            }
             size="large"
             variant="contained"
           >

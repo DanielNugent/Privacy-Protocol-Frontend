@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSortItem } from "@mui/x-data-grid";
 
 const SCANS = "scans";
 const TRANSACTIONS = "transactions";
@@ -13,7 +13,8 @@ const scanColumns = [
   {
     field: "accuracy",
     headerName: "Hamming distance",
-    description: "How close the new scan resembles this one (the lower the better).",
+    description:
+      "How close the new scan resembles this one (the lower the better).",
     width: 200,
   },
 ];
@@ -37,6 +38,12 @@ export default function CustomTable({ data, table }: Props): ReactElement {
         return scanColumns;
     }
   }
+  const [sortModel, setSortModel] = React.useState<GridSortItem[]>([
+    {
+      field: "accuracy",
+      sort: "asc",
+    },
+  ]);
 
   return (
     <div
@@ -54,6 +61,8 @@ export default function CustomTable({ data, table }: Props): ReactElement {
         pageSize={5}
         disableSelectionOnClick={true}
         rowsPerPageOptions={[5]}
+        sortModel={sortModel}
+        onSortModelChange={(model) => setSortModel(model)}
       />
     </div>
   );

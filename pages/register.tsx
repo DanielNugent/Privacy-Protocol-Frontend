@@ -47,9 +47,9 @@ const Register: NextPage = () => {
           required
           id="fullWidth"
           error={hashOfScanError}
-          helperText="The Hash of the Scan should be a 256 bit string in Hexadecimal format"
+          helperText="The Hash of the Scan should be a 512 bit string in Hexadecimal format"
           onChange={onChangeHashOfScan}
-          inputProps={{ maxLength: 64 }}
+          inputProps={{ maxLength: 128 }}
         />
         <Typography style={{ marginBottom: 10 }}>
           <NextLink

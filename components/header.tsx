@@ -60,12 +60,12 @@ export default function Header(): ReactElement {
             </Link>
             <Link href="/transactions" passHref>
               <Button variant={getButtonStyle("transactions")}>
-                Transactions
+                Indexing
               </Button>
             </Link>
             <Link href="/identifiers" passHref>
               <Button variant={getButtonStyle("identifiers")}>
-                Identifiers
+                Record Location
               </Button>
             </Link>
             <Link href="/tools" passHref>
