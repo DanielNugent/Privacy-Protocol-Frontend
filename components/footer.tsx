@@ -31,14 +31,6 @@ export default function Footer(): ReactElement {
         >
           <MenuBookIcon />
         </IconButton>
-        <IconButton
-          href="/whitepaper"
-          rel="noopener noreferrer"
-          target="_blank"
-          aria-label="whitepaper"
-        >
-          <ArticleIcon />
-        </IconButton>
       </Stack>
     </div>
   );
